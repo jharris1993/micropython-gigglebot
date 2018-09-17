@@ -16,8 +16,8 @@ _SET_MOTOR_POWER        = const(b'\x09')
 _SET_MOTOR_POWERS       = const(b'\x0a')
 _GET_VOLTAGE_RAIL       = const(b'\x0b')
 
-MOTOR_LEFT             = const(0x01)
-MOTOR_RIGHT            = const(0x02)
+MOTOR_LEFT              = const(0x01)
+MOTOR_RIGHT             = const(0x02)
 
 _MOTOR_FLOAT            = const(-128)
 
