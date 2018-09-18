@@ -146,11 +146,11 @@ def _VL53L0X_init():
     write(_ADDRESS, _MSRC_CONFIG_CONTROL + ustruct.pack('B', (read(_ADDRESS, 1)[0] | 0x12)))
 
     # set final range signal rate limit to 0.25 MCPS (million counts per second)
-    __VL53L0X_set_signal_rate_limit(0.25)
+    _VL53L0X_set_signal_rate_limit(0.25)
 
     write(_ADDRESS, _SYSTEM_SEQUENCE_CONFIG + b'\xff')
 
-    spad_count, spad_type_is_aperture, success = __VL53L0X_get_spad_info()
+    spad_count, spad_type_is_aperture, success = _VL53L0X_get_spad_info()
     if not success:
         return False
 
@@ -297,7 +297,7 @@ def _VL53L0X_init():
 
     # -- VL53L0X_SetGpioConfig() end
     global measurement_timing_budget_us
-    measurement_timing_budget_us = __VL53L0X_get_measurement_timing_budget()
+    measurement_timing_budget_us = _VL53L0X_get_measurement_timing_budget()
 
     # "Disable MSRC and TCC by default"
     # MSRC = Minimum Signal Rate Check
@@ -309,7 +309,7 @@ def _VL53L0X_init():
     # -- VL53L0X_SetSequenceStepEnable() end
 
     # "Recalculate timing budget"
-    __VL53L0X_set_measurement_timing_budget(measurement_timing_budget_us)
+    _VL53L0X_set_measurement_timing_budget(measurement_timing_budget_us)
 
     # VL53L0X_StaticInit() end
 
@@ -318,7 +318,7 @@ def _VL53L0X_init():
     # -- VL53L0X_perform_vhv_calibration() begin
 
     write(_ADDRESS, _SYSTEM_SEQUENCE_CONFIG + b'\x01')
-    if not __VL53L0X_perform_single_ref_calibration(0x40):
+    if not _VL53L0X_perform_single_ref_calibration(0x40):
         return False
 
     # -- VL53L0X_perform_vhv_calibration() end
@@ -326,7 +326,7 @@ def _VL53L0X_init():
     # -- VL53L0X_perform_phase_calibration() begin
 
     write(_ADDRESS, _SYSTEM_SEQUENCE_CONFIG + b'\x02')
-    if not __VL53L0X_perform_single_ref_calibration(0x00):
+    if not _VL53L0X_perform_single_ref_calibration(0x00):
         return False
 
     # -- VL53L0X_perform_phase_calibration() end
@@ -357,7 +357,7 @@ def _VL53L0X_set_signal_rate_limit(limit_Mcps):
 # Get reference SPAD (single photon avalanche diode) count and type
 # based on VL53L0X_get_info_from_device(),
 # but only gets reference SPAD count and type
-def __VL53L0X_get_spad_info():
+def _VL53L0X_get_spad_info():
     write(_ADDRESS, b'\x80\x01')
     write(_ADDRESS, b'\xff\x01')
     write(_ADDRESS, b'\x00\x00')
@@ -373,10 +373,10 @@ def __VL53L0X_get_spad_info():
     write(_ADDRESS, b'\x94\x6b')
     write(_ADDRESS, b'\x83\x00')
 
-    __VL53L0X_start_timeout()
+    _VL53L0X_start_timeout()
     write(_ADDRESS, b'\x83')
     while(read(_ADDRESS, 1) == b'\x00'):
-        if(__VL53L0X_check_timeout_expired()):
+        if(_VL53L0X_check_timeout_expired()):
             return 0, 0, False
         else:
             write(_ADDRESS, b'\x83')
@@ -401,13 +401,13 @@ def __VL53L0X_get_spad_info():
     return count, type_is_aperture, True
 
 # Check if timeout is enabled (set to nonzero value) and has expired
-def __VL53L0X_check_timeout_expired():
+def _VL53L0X_check_timeout_expired():
     if(io_timeout > 0 and (utime.ticks_ms() - timeout_start) > io_timeout):
         return True
     return False
 
 # Record the current time to check an upcoming timeout against
-def __VL53L0X_start_timeout():
+def _VL53L0X_start_timeout():
     global timeout_start
     timeout_start = utime.ticks_ms()
 
@@ -419,7 +419,7 @@ def __VL53L0X_start_timeout():
 # Get the measurement timing budget in microseconds
 # based on VL53L0X_get_measurement_timing_budget_micro_seconds()
 # in us
-def __VL53L0X_get_measurement_timing_budget():
+def _VL53L0X_get_measurement_timing_budget():
 
     StartOverhead      = 1910 # note that this is different than the value in set_
     EndOverhead        = 960
@@ -432,8 +432,8 @@ def __VL53L0X_get_measurement_timing_budget():
     # "Start and end overhead times always present"
     budget_us = StartOverhead + EndOverhead
 
-    enables = __VL53L0X_get_sequence_step_enables()
-    timeouts = __VL53L0X_get_sequence_step_timeouts(enables["pre_range"])
+    enables = _VL53L0X_get_sequence_step_enables()
+    timeouts = _VL53L0X_get_sequence_step_timeouts(enables["pre_range"])
 
     if (enables["tcc"]):
         budget_us += (timeouts["msrc_dss_tcc_us"] + TccOverhead)
@@ -455,7 +455,7 @@ def __VL53L0X_get_measurement_timing_budget():
 
 # Get sequence step enables
 # based on VL53L0X_get_sequence_step_enables()
-def __VL53L0X_get_sequence_step_enables():
+def _VL53L0X_get_sequence_step_enables():
     write(_ADDRESS, _SYSTEM_SEQUENCE_CONFIG)
     sequence_config = read(_ADDRESS, 1)[0]
     SequenceStepEnables = {"tcc":0, "msrc":0, "dss":0, "pre_range":0, "final_range":0}
@@ -470,65 +470,65 @@ def __VL53L0X_get_sequence_step_enables():
 # based on get_sequence_step_timeout(),
 # but gets all timeouts instead of just the requested one, and also stores
 # intermediate values
-def __VL53L0X_get_sequence_step_timeouts(pre_range):
+def _VL53L0X_get_sequence_step_timeouts(pre_range):
     SequenceStepTimeouts = {"pre_range_vcsel_period_pclks":0, "final_range_vcsel_period_pclks":0, "msrc_dss_tcc_mclks":0, "pre_range_mclks":0, "final_range_mclks":0, "msrc_dss_tcc_us":0, "pre_range_us":0, "final_range_us":0}
-    SequenceStepTimeouts["pre_range_vcsel_period_pclks"] = __VL53L0X_get_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_PRE)
+    SequenceStepTimeouts["pre_range_vcsel_period_pclks"] = _VL53L0X_get_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_PRE)
 
     write(_ADDRESS, _MSRC_CONFIG_TIMEOUT_MACROP)
     SequenceStepTimeouts["msrc_dss_tcc_mclks"] = read(_ADDRESS, 1)[0] + 1
-    SequenceStepTimeouts["msrc_dss_tcc_us"] = __VL53L0X_timeout_mclks_to_microseconds(SequenceStepTimeouts["msrc_dss_tcc_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
+    SequenceStepTimeouts["msrc_dss_tcc_us"] = _VL53L0X_timeout_mclks_to_microseconds(SequenceStepTimeouts["msrc_dss_tcc_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
 
     write(_ADDRESS, _PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI)
-    SequenceStepTimeouts["pre_range_mclks"] = __VL53L0X_decode_timeout(ustruct.unpack('>H', read(_ADDRESS, 2)))
-    SequenceStepTimeouts["pre_range_us"] = __VL53L0X_timeout_mclks_to_microseconds(SequenceStepTimeouts["pre_range_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
+    SequenceStepTimeouts["pre_range_mclks"] = _VL53L0X_decode_timeout(ustruct.unpack('>H', read(_ADDRESS, 2)))
+    SequenceStepTimeouts["pre_range_us"] = _VL53L0X_timeout_mclks_to_microseconds(SequenceStepTimeouts["pre_range_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
 
-    SequenceStepTimeouts["final_range_vcsel_period_pclks"] = __VL53L0X_get_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_FINAL)
+    SequenceStepTimeouts["final_range_vcsel_period_pclks"] = _VL53L0X_get_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_FINAL)
 
     write(_ADDRESS, _FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI)
-    SequenceStepTimeouts["final_range_mclks"] = __VL53L0X_decode_timeout(ustruct.unpack('>H', read(_ADDRESS, 2)))
+    SequenceStepTimeouts["final_range_mclks"] = _VL53L0X_decode_timeout(ustruct.unpack('>H', read(_ADDRESS, 2)))
 
     if (pre_range):
         SequenceStepTimeouts["final_range_mclks"] -= SequenceStepTimeouts["pre_range_mclks"]
 
-    SequenceStepTimeouts["final_range_us"] = __VL53L0X_timeout_mclks_to_microseconds(SequenceStepTimeouts["final_range_mclks"], SequenceStepTimeouts["final_range_vcsel_period_pclks"])
+    SequenceStepTimeouts["final_range_us"] = _VL53L0X_timeout_mclks_to_microseconds(SequenceStepTimeouts["final_range_mclks"], SequenceStepTimeouts["final_range_vcsel_period_pclks"])
 
     return SequenceStepTimeouts
 
 # Decode VCSEL (vertical cavity surface emitting laser) pulse period in PCLKs
 # from register value
 # based on VL53L0X_decode_vcsel_period()
-def __VL53L0X_decode_vcsel_period(reg_val):
+def _VL53L0X_decode_vcsel_period(reg_val):
     return (((reg_val) + 1) << 1)
 
 # Get the VCSEL pulse period in PCLKs for the given period type.
 # based on VL53L0X_get_vcsel_pulse_period()
-def __VL53L0X_get_vcsel_pulse_period(type):
+def _VL53L0X_get_vcsel_pulse_period(type):
     if type == __VL53L0X_VCSEL_PERIOD_RANGE_PRE:
         write(_ADDRESS, _PRE_RANGE_CONFIG_VCSEL_PERIOD)
-        return __VL53L0X_decode_vcsel_period(read(_ADDRESS, 1)[0])
+        return _VL53L0X_decode_vcsel_period(read(_ADDRESS, 1)[0])
     elif type == __VL53L0X_VCSEL_PERIOD_RANGE_FINAL:
         write(_ADDRESS, _FINAL_RANGE_CONFIG_VCSEL_PERIOD)
-        return __VL53L0X_decode_vcsel_period(read(_ADDRESS, 1)[0])
+        return _VL53L0X_decode_vcsel_period(read(_ADDRESS, 1)[0])
     else:
         return 255
 
 # Convert sequence step timeout from MCLKs to microseconds with given VCSEL period in PCLKs
 # based on VL53L0X_calc_timeout_us()
-def __VL53L0X_timeout_mclks_to_microseconds(timeout_period_mclks, vcsel_period_pclks):
-    macro_period_ns = __VL53L0X_calc_macro_period(vcsel_period_pclks)
+def _VL53L0X_timeout_mclks_to_microseconds(timeout_period_mclks, vcsel_period_pclks):
+    macro_period_ns = _VL53L0X_calc_macro_period(vcsel_period_pclks)
     return ((timeout_period_mclks * macro_period_ns) + (macro_period_ns / 2)) / 1000
 
 # Calculate macro period in *nanoseconds* from VCSEL period in PCLKs
 # based on VL53L0X_calc_macro_period_ps()
 # PLL_period_ps = 1655; macro_period_vclks = 2304
-def __VL53L0X_calc_macro_period(vcsel_period_pclks):
+def _VL53L0X_calc_macro_period(vcsel_period_pclks):
     return (((2304 * vcsel_period_pclks * 1655) + 500) / 1000)
 
 # Decode sequence step timeout in MCLKs from register value
 # based on VL53L0X_decode_timeout()
 # Note: the original function returned a uint32_t, but the return value is
 #always stored in a uint16_t.
-def __VL53L0X_decode_timeout(reg_val):
+def _VL53L0X_decode_timeout(reg_val):
     # format: "(LSByte * 2^MSByte) + 1"
     return ((reg_val & 0x00FF) << ((reg_val & 0xFF00) >> 8)) + 1;
 
@@ -539,7 +539,7 @@ def __VL53L0X_decode_timeout(reg_val):
 # factor of N decreases the range measurement standard deviation by a factor of
 # sqrt(N). Defaults to about 33 milliseconds the minimum is 20 ms.
 # based on VL53L0X_set_measurement_timing_budget_micro_seconds()
-def __VL53L0X_set_measurement_timing_budget(budget_us):
+def _VL53L0X_set_measurement_timing_budget(budget_us):
     StartOverhead      = 1320 # note that this is different than the value in get_
     EndOverhead        = 960
     MsrcOverhead       = 660
@@ -555,8 +555,8 @@ def __VL53L0X_set_measurement_timing_budget(budget_us):
 
     used_budget_us = StartOverhead + EndOverhead
 
-    enables = __VL53L0X_get_sequence_step_enables()
-    timeouts = __VL53L0X_get_sequence_step_timeouts(enables["pre_range"])
+    enables = _VL53L0X_get_sequence_step_enables()
+    timeouts = _VL53L0X_get_sequence_step_timeouts(enables["pre_range"])
 
     if enables["tcc"]:
         used_budget_us += (timeouts["msrc_dss_tcc_us"] + TccOverhead)
@@ -592,12 +592,12 @@ def __VL53L0X_set_measurement_timing_budget(budget_us):
         #  timeouts must be expressed in macro periods MClks
         #  because they have different vcsel periods."
 
-        final_range_timeout_mclks = __VL53L0X_timeout_microseconds_to_mclks(final_range_timeout_us, timeouts["final_range_vcsel_period_pclks"])
+        final_range_timeout_mclks = _VL53L0X_timeout_microseconds_to_mclks(final_range_timeout_us, timeouts["final_range_vcsel_period_pclks"])
 
         if enables["pre_range"]:
             final_range_timeout_mclks += timeouts["pre_range_mclks"]
 
-        encoded_timeout = __VL53L0X_encode_timeout(final_range_timeout_mclks)
+        encoded_timeout = _VL53L0X_encode_timeout(final_range_timeout_mclks)
         write(_ADDRESS, _FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI + ustruct.pack('BB', encoded_timeout >> 8 & 0xff, encoded_timeout & 0xff))
 
         # set_sequence_step_timeout() end
@@ -609,7 +609,7 @@ def __VL53L0X_set_measurement_timing_budget(budget_us):
 # based on VL53L0X_encode_timeout()
 # Note: the original function took a uint16_t, but the argument passed to it
 # is always a uint16_t.
-def __VL53L0X_encode_timeout(timeout_mclks):
+def _VL53L0X_encode_timeout(timeout_mclks):
     # format: "(LSByte * 2^MSByte) + 1"
 
     ls_byte = 0
@@ -628,18 +628,18 @@ def __VL53L0X_encode_timeout(timeout_mclks):
 
 # Convert sequence step timeout from microseconds to MCLKs with given VCSEL period in PCLKs
 # based on VL53L0X_calc_timeout_mclks()
-def __VL53L0X_timeout_microseconds_to_mclks(timeout_period_us, vcsel_period_pclks):
-    macro_period_ns = __VL53L0X_calc_macro_period(vcsel_period_pclks)
+def _VL53L0X_timeout_microseconds_to_mclks(timeout_period_us, vcsel_period_pclks):
+    macro_period_ns = _VL53L0X_calc_macro_period(vcsel_period_pclks)
     return (((timeout_period_us * 1000) + (macro_period_ns / 2)) / macro_period_ns)
 
 # based on VL53L0X_perform_single_ref_calibration()
-def __VL53L0X_perform_single_ref_calibration(vhv_init_byte):
+def _VL53L0X_perform_single_ref_calibration(vhv_init_byte):
     write(_ADDRESS, _SYSRANGE_START + ustruct.pack('B', 0x01 | vhv_init_byte)) # VL53L0X_REG_SYSRANGE_MODE_START_STOP
 
-    __VL53L0X_start_timeout()
+    _VL53L0X_start_timeout()
     write(_ADDRESS, _RESULT_INTERRUPT_STATUS)
     while (read(_ADDRESS, 1)[0] & 0x07) == 0:
-        if __VL53L0X_check_timeout_expired():
+        if _VL53L0X_check_timeout_expired():
             return False
         else:
             write(_ADDRESS, _RESULT_INTERRUPT_STATUS)
@@ -649,7 +649,7 @@ def __VL53L0X_perform_single_ref_calibration(vhv_init_byte):
 
     return True
 
-def __VL53L0X_set_timeout(timeout):
+def _VL53L0X_set_timeout(timeout):
     global io_timeout
     io_timeout = timeout
 
@@ -691,10 +691,10 @@ def VL53L0X_start_continuous(period_ms = 0):
 # (read_range_single_millimeters() also calls this function after starting a
 # single-shot range measurement)
 def VL53L0X_read_range_continuous_millimeters():
-    __VL53L0X_start_timeout()
+    _VL53L0X_start_timeout()
     write(_ADDRESS, _RESULT_INTERRUPT_STATUS)
     while ((read(_ADDRESS, 1)[0] & 0x07) == 0):
-        if __VL53L0X_check_timeout_expired():
+        if _VL53L0X_check_timeout_expired():
             global did_timeout
             did_timeout = True
             raise OSError("read_range_continuous_millimeters timeout")
@@ -710,9 +710,33 @@ def VL53L0X_read_range_continuous_millimeters():
 
     return range
 
+def VL53L0X_read_range_single_millimeters():
+    write(_ADDRESS, b'\x80\x01')
+    write(_ADDRESS, b'\xff\x01')
+    write(_ADDRESS, b'\x00\x00')
+    write(_ADDRESS, b'\x91' + ustruct.pack('B', stop_variable
+    ))
+    write(_ADDRESS, b'\x00\x01')
+    write(_ADDRESS, b'\xff\x00')
+    write(_ADDRESS, b'\x80\x00')
+
+    write(_ADDRESS, _SYSRANGE_START + b'\x01')
+    global did_timeout
+
+    # "Wait until start bit has been cleared"
+    _VL53L0X_start_timeout()
+    write(_ADDRESS, _SYSRANGE_START)
+    while (read(_ADDRESS, 1)[0] & 0x01):
+        if _VL53L0X_check_timeout_expired():
+            did_timeout = True
+            raise OSError("read_range_single_millimeters timeout")
+        else:
+            write(_ADDRESS, _SYSRANGE_START)
+    return VL53L0X_read_range_continuous_millimeters()
+
 # Did a timeout occur in one of the read functions since the last call to
 # timeout_occurred()?
-def __VL53L0X_timeout_occurred():
+def _VL53L0X_timeout_occurred():
     global did_timeout
     tmp = did_timeout
     did_timeout = False
@@ -725,11 +749,11 @@ def __VL53L0X_timeout_occurred():
 #  pre:  12 to 18 (initialized default: 14)
 #  final: 8 to 14 (initialized default: 10)
 # based on VL53L0X_setVcselPulsePeriod()
-def __VL53L0X_set_vcsel_pulse_period(type, period_pclks):
-    vcsel_period_reg = __VL53L0X_encode_vcsel_period(period_pclks)
+def _VL53L0X_set_vcsel_pulse_period(type, period_pclks):
+    vcsel_period_reg = _VL53L0X_encode_vcsel_period(period_pclks)
 
-    enables = __VL53L0X_get_sequence_step_enables()
-    timeouts = __VL53L0X_get_sequence_step_timeouts(enables["pre_range"])
+    enables = _VL53L0X_get_sequence_step_enables()
+    timeouts = _VL53L0X_get_sequence_step_timeouts(enables["pre_range"])
 
     # "Apply specific settings for the requested clock period"
     # "Re-calculate and apply timeouts, in macro periods"
@@ -766,9 +790,9 @@ def __VL53L0X_set_vcsel_pulse_period(type, period_pclks):
         # set_sequence_step_timeout() begin
         # (SequenceStepId == VL53L0X_SEQUENCESTEP_PRE_RANGE)
 
-        new_pre_range_timeout_mclks = __VL53L0X_timeout_microseconds_to_mclks(timeouts["pre_range_us"], period_pclks)
+        new_pre_range_timeout_mclks = _VL53L0X_timeout_microseconds_to_mclks(timeouts["pre_range_us"], period_pclks)
 
-        encoded_timeout = __VL53L0X_encode_timeout(new_pre_range_timeout_mclks)
+        encoded_timeout = _VL53L0X_encode_timeout(new_pre_range_timeout_mclks)
         write(_ADDRESS, _PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI + ustruct.pack('BB', encoded_timeout >> 8 & 0xff, encoded_timeout & 0xff))
 
         # set_sequence_step_timeout() end
@@ -776,7 +800,7 @@ def __VL53L0X_set_vcsel_pulse_period(type, period_pclks):
         # set_sequence_step_timeout() begin
         # (SequenceStepId == VL53L0X_SEQUENCESTEP_MSRC)
 
-        new_msrc_timeout_mclks = __VL53L0X_timeout_microseconds_to_mclks(timeouts["msrc_dss_tcc_us"], period_pclks)
+        new_msrc_timeout_mclks = _VL53L0X_timeout_microseconds_to_mclks(timeouts["msrc_dss_tcc_us"], period_pclks)
 
         if new_msrc_timeout_mclks > 256:
             write(_ADDRESS, _MSRC_CONFIG_TIMEOUT_MACROP + b'\xff')
@@ -834,12 +858,12 @@ def __VL53L0X_set_vcsel_pulse_period(type, period_pclks):
         #  timeouts must be expressed in macro periods MClks
         #  because they have different vcsel periods."
 
-        new_final_range_timeout_mclks = __VL53L0X_timeout_microseconds_to_mclks(timeouts["final_range_us"], period_pclks)
+        new_final_range_timeout_mclks = _VL53L0X_timeout_microseconds_to_mclks(timeouts["final_range_us"], period_pclks)
 
         if enables["pre_range"]:
             new_final_range_timeout_mclks += timeouts["pre_range_mclks"]
 
-        encoded_timeout = __VL53L0X_encode_timeout(new_final_range_timeout_mclks)
+        encoded_timeout = _VL53L0X_encode_timeout(new_final_range_timeout_mclks)
         write(_ADDRESS, _FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI + ustruct.pack('BB', encoded_timeout >> 8 & 0xff, encoded_timeout & 0xff))
 
         # set_sequence_step_timeout end
@@ -849,22 +873,22 @@ def __VL53L0X_set_vcsel_pulse_period(type, period_pclks):
 
     # "Finally, the timing budget must be re-applied"
 
-    __VL53L0X_set_measurement_timing_budget(measurement_timing_budget_us)
+    _VL53L0X_set_measurement_timing_budget(measurement_timing_budget_us)
 
     # "Perform the phase calibration. This is needed after changing on vcsel period."
     write(_ADDRESS, _SYSTEM_SEQUENCE_CONFIG)
     sequence_config = read(_ADDRESS, 1)
     write(_ADDRESS, _SYSTEM_SEQUENCE_CONFIG + b'\x02')
-    __VL53L0X_perform_single_ref_calibration(0x0)
+    _VL53L0X_perform_single_ref_calibration(0x0)
     write(_ADDRESS, _SYSTEM_SEQUENCE_CONFIG + sequence_config)
 
     return True
 
 # Encode VCSEL pulse period register value from period in PCLKs
 # based on VL53L0X_encode_vcsel_period()
-def __VL53L0X_encode_vcsel_period(period_pclks):
+def _VL53L0X_encode_vcsel_period(period_pclks):
     return((period_pclks >> 1) - 1)
 
 VL53L0X_init()
 VL53L0X_start_continuous()
-print(VL53L0X_read_range_continuous_millimeters())
+VL53L0X_read_range_continuous_millimeters()
