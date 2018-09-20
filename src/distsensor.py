@@ -888,7 +888,3 @@ def _VL53L0X_set_vcsel_pulse_period(type, period_pclks):
 # based on VL53L0X_encode_vcsel_period()
 def _VL53L0X_encode_vcsel_period(period_pclks):
     return((period_pclks >> 1) - 1)
-
-VL53L0X_init()
-VL53L0X_start_continuous()
-VL53L0X_read_range_continuous_millimeters()
