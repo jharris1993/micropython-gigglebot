@@ -112,19 +112,7 @@ class VL53L0X():
         sleep_ms(5)
 
         self.__set_address(address)
-        self.__init()                   # initialize the sensor
-        self.__set_timeout(timeout)     # set the timeout
-
-    def __set_address(self, address):
-        address &= 0x7f
-        try:
-            write(self.addr, b'\x8a' + ustruct.pack('B', address))
-            self.addr = address
-        except IOError:
-            write(address, b'\x8a' + ustruct.pack('B', address))
-            self.addr = address
-
-    def __init(self):
+        
         write(self.addr, b'\x89')
         write(self.addr, b'\x89' + ustruct.pack('B', (read(self.addr, 1)[0] | 0x01)))
 
@@ -153,7 +141,8 @@ class VL53L0X():
 
         spad_count, spad_type_is_aperture, success = self.__get_spad_info()
         if not success:
-            return False
+            self.__set_timeout(timeout)     # set the timeout
+            return
 
         # The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
         # the API, but the same data seems to be more easily readable from
@@ -320,7 +309,8 @@ class VL53L0X():
 
         write(self.addr, b'\x01' + b'\x01')
         if not self.__perform_single_ref_calibration(0x40):
-            return False
+            self.__set_timeout(timeout)     # set the timeout
+            return
 
         # -- VL53L0X_perform_vhv_calibration() end
 
@@ -328,16 +318,24 @@ class VL53L0X():
 
         write(self.addr, b'\x01' + b'\x02')
         if not self.__perform_single_ref_calibration(0x00):
-            return False
+            self.__set_timeout(timeout)     # set the timeout
+            return
 
         # -- VL53L0X_perform_phase_calibration() end
 
         # "restore the previous Sequence Config"
         write(self.addr, b'\x01' + b'\xe8')
 
-        # VL53L0X_PerformRefCalibration() end
+        self.__set_timeout(timeout)     # set the timeout
 
-        return True
+    def __set_address(self, address):
+        address &= 0x7f
+        try:
+            write(self.addr, b'\x8a' + ustruct.pack('B', address))
+            self.addr = address
+        except IOError:
+            write(address, b'\x8a' + ustruct.pack('B', address))
+            self.addr = address
 
     def __set_signal_rate_limit(self, limit_Mcps):
         if (limit_Mcps < 0 or limit_Mcps > 511.99):
@@ -451,13 +449,13 @@ class VL53L0X():
         SequenceStepTimeouts["msrc_dss_tcc_us"] = self.__timeout_mclks_to_microseconds(SequenceStepTimeouts["msrc_dss_tcc_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
 
         write(self.addr, b'\x51')
-        SequenceStepTimeouts["pre_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2)))
+        SequenceStepTimeouts["pre_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2))[0])
         SequenceStepTimeouts["pre_range_us"] = self.__timeout_mclks_to_microseconds(SequenceStepTimeouts["pre_range_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
 
         SequenceStepTimeouts["final_range_vcsel_period_pclks"] = self.__get_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_FINAL)
 
         write(self.addr, b'\x71')
-        SequenceStepTimeouts["final_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2)))
+        SequenceStepTimeouts["final_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2))[0])
 
         if (pre_range):
             SequenceStepTimeouts["final_range_mclks"] -= SequenceStepTimeouts["pre_range_mclks"]
