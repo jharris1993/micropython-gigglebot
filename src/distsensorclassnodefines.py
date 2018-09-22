@@ -1,8 +1,3 @@
-import microbit
-import ustruct
-from utime import sleep_ms, ticks_ms
-from micropython import const
-
 # _SYSRANGE_START                              = const(b'\x00')
 
 # _SYSTEM_THRESH_HIGH                          = const(b'\x0C')
@@ -85,12 +80,44 @@ from micropython import const
 # _ALGO_PHASECAL_LIM                           = const(b'\x30')
 # _ALGO_PHASECAL_CONFIG_TIMEOUT                = const(b'\x30')
 
-_DEFAULT_ADDRESS                             = const(0x29)
-__VL53L0X_VCSEL_PERIOD_RANGE_PRE             = const(0)
-__VL53L0X_VCSEL_PERIOD_RANGE_FINAL           = const(1)
+import microbit
+import ustruct
+from utime import sleep_ms, ticks_ms
+from micropython import const
 
 write = microbit.i2c.write
-read = microbit.i2c.read 
+read = microbit.i2c.read
+
+# import struct
+# from time import time, sleep
+# from periphery import I2C
+
+# ustruct = struct
+
+# def sleep_ms(ms):
+#     sleep(ms / 1000.0)
+
+# def ticks_ms():
+#     return int(time() // 1000)
+
+# i2c = I2C('/dev/i2c-1')
+
+# def read(addr, no_bytes):
+#     read_bytes = [255] * no_bytes
+#     msg = [I2C.Message(read_bytes, read = True)]
+#     i2c.transfer(addr, msg)
+#     data = msg[0].data
+
+#     return bytes(data)
+
+# def write(addr, data):
+#     data = list(struct.unpack('B' * (len(data.hex()) // 2), data))
+#     msg = [I2C.Message(data)]
+#     i2c.transfer(addr, msg)
+
+_DEFAULT_ADDRESS                             = 0x29
+__VL53L0X_VCSEL_PERIOD_RANGE_PRE             = 0
+__VL53L0X_VCSEL_PERIOD_RANGE_FINAL           = 1
 
 class VL53L0X():
 
@@ -98,7 +125,7 @@ class VL53L0X():
     did_timeout = False
     addr = _DEFAULT_ADDRESS
 
-    def __init__(self, address = 0x2a, timeout = 500):   
+    def __init__(self, address = 0x29, timeout = 500):   
         try:
             write(self.addr, b'\xbf' + b'\x00')
             sleep_ms(2)
@@ -390,7 +417,7 @@ class VL53L0X():
         return count, type_is_aperture, True
 
     def __check_timeout_expired(self):
-        if(self.io_timeout > 0 and (ticks_ms() - self.timeout_start) > io_timeout):
+        if(self.io_timeout > 0 and (ticks_ms() - self.timeout_start) > self.io_timeout):
             return True
         return False
 
@@ -442,7 +469,7 @@ class VL53L0X():
 
     def __get_sequence_step_timeouts(self, pre_range):
         SequenceStepTimeouts = {"pre_range_vcsel_period_pclks":0, "final_range_vcsel_period_pclks":0, "msrc_dss_tcc_mclks":0, "pre_range_mclks":0, "final_range_mclks":0, "msrc_dss_tcc_us":0, "pre_range_us":0, "final_range_us":0}
-        SequenceStepTimeouts["pre_range_vcsel_period_pclks"] = self.__get_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_PRE)
+        SequenceStepTimeouts["pre_range_vcsel_period_pclks"] = self.__get_vcsel_pulse_period(0)
 
         write(self.addr, b'\x46')
         SequenceStepTimeouts["msrc_dss_tcc_mclks"] = read(self.addr, 1)[0] + 1
@@ -452,7 +479,7 @@ class VL53L0X():
         SequenceStepTimeouts["pre_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2))[0])
         SequenceStepTimeouts["pre_range_us"] = self.__timeout_mclks_to_microseconds(SequenceStepTimeouts["pre_range_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
 
-        SequenceStepTimeouts["final_range_vcsel_period_pclks"] = self.__get_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_FINAL)
+        SequenceStepTimeouts["final_range_vcsel_period_pclks"] = self.__get_vcsel_pulse_period(1)
 
         write(self.addr, b'\x71')
         SequenceStepTimeouts["final_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2))[0])
@@ -473,10 +500,10 @@ class VL53L0X():
     # Get the VCSEL pulse period in PCLKs for the given period type.
     # based on VL53L0X_get_vcsel_pulse_period()
     def __get_vcsel_pulse_period(self, type):
-        if type == __VL53L0X_VCSEL_PERIOD_RANGE_PRE:
+        if type == 0:
             write(self.addr, b'\x50')
             return self.__decode_vcsel_period(read(self.addr, 1)[0])
-        elif type == __VL53L0X_VCSEL_PERIOD_RANGE_FINAL:
+        elif type == 1:
             write(self.addr, b'\x70')
             return self.__decode_vcsel_period(read(self.addr, 1)[0])
         else:
@@ -598,7 +625,7 @@ class VL53L0X():
     # Convert sequence step timeout from microseconds to MCLKs with given VCSEL period in PCLKs
     # based on VL53L0X_calc_timeout_mclks()
     def __timeout_microseconds_to_mclks(self, timeout_period_us, vcsel_period_pclks):
-        macro_period_ns = _VL53L0X_calc_macro_period(vcsel_period_pclks)
+        macro_period_ns = self.__calc_macro_period(vcsel_period_pclks)
         return (((timeout_period_us * 1000) + (macro_period_ns / 2)) / macro_period_ns)
 
 
@@ -632,7 +659,7 @@ class VL53L0X():
         write(self.addr, b'\x80\x01')
         write(self.addr, b'\xff\x01')
         write(self.addr, b'\x00\x00')
-        write(self.addr, b'\x91' + ustruct.pack('B', stop_variable))
+        write(self.addr, b'\x91' + self.stop_variable)
         write(self.addr, b'\x00\x01')
         write(self.addr, b'\xff\x00')
         write(self.addr, b'\x80\x00')
@@ -682,7 +709,7 @@ class VL53L0X():
         write(self.addr, b'\x80\x01')
         write(self.addr, b'\xff\x01')
         write(self.addr, b'\x00\x00')
-        write(self.addr, b'\x91' + ustruct.pack('B', stop_variable))
+        write(self.addr, b'\x91' + self.stop_variable)
         write(self.addr, b'\x00\x01')
         write(self.addr, b'\xff\x00')
         write(self.addr, b'\x80\x00')
@@ -730,7 +757,7 @@ class VL53L0X():
         # For the MSRC timeout, the same applies - this timeout being
         # dependant on the pre-range vcsel period."
 
-        if type == __VL53L0X_VCSEL_PERIOD_RANGE_PRE:
+        if type == 0:
             # "Set phase check limits"
             if period_pclks == 12:
                 write(self.addr, b'\x57' + b'\x18')
@@ -771,7 +798,7 @@ class VL53L0X():
                 write(self.addr, b'\x46' + ustruct.pack('B', new_msrc_timeout_mclks - 1))
 
             # set_sequence_step_timeout() end
-        elif type == __VL53L0X_VCSEL_PERIOD_RANGE_FINAL:
+        elif type == 1:
             if period_pclks == 8:
                 write(self.addr, b'\x48' + b'\x10')
                 write(self.addr, b'\x47' + b'\x08')
