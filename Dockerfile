@@ -66,7 +66,7 @@ mp_lexer_t *mp_lexer_new_from_file(const char *filename) {\n\
     mp_reader_t reader;\n\
     mp_reader_new_file(&reader, filename);\n\
     return mp_lexer_new(qstr_from_str(filename), reader);\n\
-}\n\' >> source/microbit/filesystem.c
+}\n' >> source/microbit/filesystem.c
 
 # compile the firmware
 RUN make all
