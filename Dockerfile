@@ -29,18 +29,6 @@ RUN python tools/makeversionhdr.py microbitversion.h && \
     mv microbitversion.h inc/genhdr && \
     ./tools/makeqstrhdr.sh
 
-# build tool to produce bytecodes of python scripts
-WORKDIR /src/upy/mpy-cross
-RUN make && cp ./mpy-cross /usr/bin
-
-# create the bytecode for our module
-WORKDIR /src/tmp
-COPY src/perf.py .
-RUN mpy-cross perf.py
-
-# generate the c code of our module and place it in the right dir to be compiled
-RUN python /src/upy/tools/mpy-tool.py -f -q /src/gupy/inc/genhdr/qstrdefs.preprocessed.h perf.mpy > /src/gupy/source/py/frozen_module.c
-
 # enable frozen and bytecoded modules
 RUN sed -i '1s/^/#define MICROPY_QSTR_EXTRA_POOL (mp_qstr_frozen_const_pool)\n/' /src/gupy/inc/microbit/mpconfigport.h && \
     sed -i '2s/^/#define MICROPY_MODULE_FROZEN_MPY (1)\n/' /src/gupy/inc/microbit/mpconfigport.h && \
@@ -69,5 +57,18 @@ mp_lexer_t *mp_lexer_new_from_file(const char *filename) {\n\
     return mp_lexer_new(qstr_from_str(filename), reader);\n\
 }\n' >> source/microbit/filesystem.c
 
+# build tool to produce bytecodes of python scripts
+WORKDIR /src/upy/mpy-cross
+RUN make && cp ./mpy-cross /usr/bin
+
+# create the bytecode for our module
+WORKDIR /src/tmp
+COPY src/perf.py .
+RUN mpy-cross perf.py
+
+# generate the c code of our module and place it in the right dir to be compiled
+RUN python /src/upy/tools/mpy-tool.py -f -q /src/gupy/inc/genhdr/qstrdefs.preprocessed.h perf.mpy > /src/gupy/source/py/frozen_module.c
+
 # compile the firmware
+WORKDIR /src/gupy
 RUN make all
