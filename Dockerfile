@@ -48,10 +48,11 @@ RUN sed -i '1s/^/#define MICROPY_QSTR_EXTRA_POOL (mp_qstr_frozen_const_pool)\n/'
 
 WORKDIR /src/gupy
 # remove the last 6 lines that contain mp_lexer_new_from_file function
+# better alternative with regex here: https://regexr.com/43nbb
 RUN head -n -6 source/microbit/filesystem.c > tmp && mv tmp source/microbit/filesystem.c
 
 # and add 2 other functions to the end of it (used to enable the use of mpy files)
-RUN echo $'\n\
+RUN echo '\n\
 void mp_reader_new_file(mp_reader_t *reader, const char *filename) {\n\
     file_descriptor_obj *fd = microbit_file_open(filename, strlen(filename), false, false);\n\
     if (fd == NULL) {\n\
