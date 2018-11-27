@@ -99,7 +99,8 @@ class VL53L0X():
     did_timeout = False
     addr = _DEFAULT_ADDRESS
 
-    def __init__(self, address = 0x29, timeout = 500):   
+    def __init__(self, address = 0x29, timeout = 500): 
+
         try:
             write(self.addr, b'\xbf' + b'\x00')
             sleep_ms(2)
@@ -445,65 +446,31 @@ class VL53L0X():
 
     def __get_sequence_step_timeouts(self, pre_range):
         SequenceStepTimeouts = {"pre_range_vcsel_period_pclks":0, "final_range_vcsel_period_pclks":0, "msrc_dss_tcc_mclks":0, "pre_range_mclks":0, "final_range_mclks":0, "msrc_dss_tcc_us":0, "pre_range_us":0, "final_range_us":0}
-        SequenceStepTimeouts["pre_range_vcsel_period_pclks"] = self.__get_vcsel_pulse_period(0)
+        write(self.addr, b'\x50')
+        SequenceStepTimeouts["pre_range_vcsel_period_pclks"] = (((read(self.addr, 1)[0]) + 1) << 1)
 
         write(self.addr, b'\x46')
         SequenceStepTimeouts["msrc_dss_tcc_mclks"] = read(self.addr, 1)[0] + 1
-        SequenceStepTimeouts["msrc_dss_tcc_us"] = self.__timeout_mclks_to_microseconds(SequenceStepTimeouts["msrc_dss_tcc_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
+        SequenceStepTimeouts["msrc_dss_tcc_us"] = (((2304 * SequenceStepTimeouts["pre_range_vcsel_period_pclks"] * 1655) + 500) / 1000) * (SequenceStepTimeouts["msrc_dss_tcc_mclks"] + 0.5) / 1000
 
         write(self.addr, b'\x51')
-        SequenceStepTimeouts["pre_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2))[0])
-        SequenceStepTimeouts["pre_range_us"] = self.__timeout_mclks_to_microseconds(SequenceStepTimeouts["pre_range_mclks"], SequenceStepTimeouts["pre_range_vcsel_period_pclks"])
+        reg_val = ustruct.unpack('>H', read(self.addr, 2))[0]
+        SequenceStepTimeouts["pre_range_mclks"] = ((reg_val & 0x00FF) << ((reg_val & 0xFF00) >> 8)) + 1
+        SequenceStepTimeouts["pre_range_us"] = (((2304 * SequenceStepTimeouts["pre_range_vcsel_period_pclks"] * 1655) + 500) / 1000) * (SequenceStepTimeouts["pre_range_mclks"] + 0.5) / 1000
 
-        SequenceStepTimeouts["final_range_vcsel_period_pclks"] = self.__get_vcsel_pulse_period(1)
+        write(self.addr, b'\x70')
+        SequenceStepTimeouts["final_range_vcsel_period_pclks"] = (((read(self.addr, 1)[0]) + 1) << 1)
 
         write(self.addr, b'\x71')
-        SequenceStepTimeouts["final_range_mclks"] = self.__decode_timeout(ustruct.unpack('>H', read(self.addr, 2))[0])
+        reg_val = ustruct.unpack('>H', read(self.addr, 2))[0]
+        SequenceStepTimeouts["final_range_mclks"] = ((reg_val & 0x00FF) << ((reg_val & 0xFF00) >> 8)) + 1
 
         if (pre_range):
             SequenceStepTimeouts["final_range_mclks"] -= SequenceStepTimeouts["pre_range_mclks"]
 
-        SequenceStepTimeouts["final_range_us"] = self.__timeout_mclks_to_microseconds(SequenceStepTimeouts["final_range_mclks"], SequenceStepTimeouts["final_range_vcsel_period_pclks"])
+        SequenceStepTimeouts["final_range_us"] = (((2304 * SequenceStepTimeouts["final_range_vcsel_period_pclks"] * 1655) + 500) / 1000) * (SequenceStepTimeouts["final_range_mclks"] + 0.5) / 1000
 
         return SequenceStepTimeouts
-
-    # Decode VCSEL (vertical cavity surface emitting laser) pulse period in PCLKs
-    # from register value
-    # based on VL53L0X_decode_vcsel_period()
-    def __decode_vcsel_period(self, reg_val):
-        return (((reg_val) + 1) << 1)
-
-    # Get the VCSEL pulse period in PCLKs for the given period type.
-    # based on VL53L0X_get_vcsel_pulse_period()
-    def __get_vcsel_pulse_period(self, type):
-        if type == 0:
-            write(self.addr, b'\x50')
-            return self.__decode_vcsel_period(read(self.addr, 1)[0])
-        elif type == 1:
-            write(self.addr, b'\x70')
-            return self.__decode_vcsel_period(read(self.addr, 1)[0])
-        else:
-            return 255
-
-    # Convert sequence step timeout from MCLKs to microseconds with given VCSEL period in PCLKs
-    # based on VL53L0X_calc_timeout_us()
-    def __timeout_mclks_to_microseconds(self, timeout_period_mclks, vcsel_period_pclks):
-        macro_period_ns = self.__calc_macro_period(vcsel_period_pclks)
-        return ((timeout_period_mclks * macro_period_ns) + (macro_period_ns / 2)) / 1000
-
-    # Calculate macro period in *nanoseconds* from VCSEL period in PCLKs
-    # based on VL53L0X_calc_macro_period_ps()
-    # PLL_period_ps = 1655; macro_period_vclks = 2304
-    def __calc_macro_period(self, vcsel_period_pclks):
-        return (((2304 * vcsel_period_pclks * 1655) + 500) / 1000)
-
-    # Decode sequence step timeout in MCLKs from register value
-    # based on VL53L0X_decode_timeout()
-    # Note: the original function returned a uint32_t, but the return value is
-    #always stored in a uint16_t.
-    def __decode_timeout(self, reg_val):
-        # format: "(LSByte * 2^MSByte) + 1"
-        return ((reg_val & 0x00FF) << ((reg_val & 0xFF00) >> 8)) + 1;
 
     # Set the measurement timing budget in microseconds, which is the time allowed
     # for one measurement the ST API and this library take care of splitting the
@@ -565,7 +532,7 @@ class VL53L0X():
             #  timeouts must be expressed in macro periods MClks
             #  because they have different vcsel periods."
 
-            final_range_timeout_mclks = self.__timeout_microseconds_to_mclks(final_range_timeout_us, timeouts["final_range_vcsel_period_pclks"])
+            final_range_timeout_mclks = 1000 * final_range_timeout_us / (((2304 * timeouts["final_range_vcsel_period_pclks"] * 1655) + 500) / 1000) + 2
 
             if enables["pre_range"]:
                 final_range_timeout_mclks += timeouts["pre_range_mclks"]
@@ -597,13 +564,6 @@ class VL53L0X():
             return ((ms_byte << 8) | (int(ls_byte) & 0xFF))
         else:
             return 0 
-
-    # Convert sequence step timeout from microseconds to MCLKs with given VCSEL period in PCLKs
-    # based on VL53L0X_calc_timeout_mclks()
-    def __timeout_microseconds_to_mclks(self, timeout_period_us, vcsel_period_pclks):
-        macro_period_ns = self.__calc_macro_period(vcsel_period_pclks)
-        return (((timeout_period_us * 1000) + (macro_period_ns / 2)) / macro_period_ns)
-
 
     # based on VL53L0X_perform_single_ref_calibration()
     def __perform_single_ref_calibration(self, vhv_init_byte):
@@ -756,7 +716,7 @@ class VL53L0X():
             # set_sequence_step_timeout() begin
             # (SequenceStepId == VL53L0X_SEQUENCESTEP_PRE_RANGE)
 
-            new_pre_range_timeout_mclks = self.__timeout_microseconds_to_mclks(timeouts["pre_range_us"], period_pclks)
+            new_pre_range_timeout_mclks = 1000 * timeouts["pre_range_us"] / (((2304 * period_pclks * 1655) + 500) / 1000) + 2
 
             encoded_timeout = self.__encode_timeout(new_pre_range_timeout_mclks)
             write(self.addr, b'\x51' + ustruct.pack('BB', encoded_timeout >> 8 & 0xff, encoded_timeout & 0xff))
@@ -766,7 +726,7 @@ class VL53L0X():
             # set_sequence_step_timeout() begin
             # (SequenceStepId == VL53L0X_SEQUENCESTEP_MSRC)
 
-            new_msrc_timeout_mclks = self.__timeout_microseconds_to_mclks(timeouts["msrc_dss_tcc_us"], period_pclks)
+            new_msrc_timeout_mclks = 1000 * timeouts["msrc_dss_tcc_us"] / (((2304 * period_pclks * 1655) + 500) / 1000) + 2
 
             if new_msrc_timeout_mclks > 256:
                 write(self.addr, b'\x46' + b'\xff')
@@ -824,7 +784,7 @@ class VL53L0X():
             #  timeouts must be expressed in macro periods MClks
             #  because they have different vcsel periods."
 
-            new_final_range_timeout_mclks = self.__timeout_microseconds_to_mclks(timeouts["final_range_us"], period_pclks)
+            new_final_range_timeout_mclks = 1000 * timeouts["final_range_us"] / (((2304 * period_pclks * 1655) + 500) / 1000) + 2
 
             if enables["pre_range"]:
                 new_final_range_timeout_mclks += timeouts["pre_range_mclks"]
