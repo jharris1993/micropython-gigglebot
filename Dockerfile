@@ -61,13 +61,13 @@ mp_lexer_t *mp_lexer_new_from_file(const char *filename) {\n\
 WORKDIR /src/upy/mpy-cross
 RUN make && cp ./mpy-cross /usr/bin
 
-# create the bytecode for our module
+# create the bytecode for our modules
 WORKDIR /src/tmp
-COPY src/perf.py .
-RUN mpy-cross perf.py
+COPY src/* ./
+RUN for module in $(ls *.py*); do mpy-cross $module || exit 1; done
 
 # generate the c code of our module and place it in the right dir to be compiled
-RUN python /src/upy/tools/mpy-tool.py -f -q /src/gupy/inc/genhdr/qstrdefs.preprocessed.h perf.mpy > /src/gupy/source/py/frozen_module.c
+RUN python /src/upy/tools/mpy-tool.py -f -q /src/gupy/inc/genhdr/qstrdefs.preprocessed.h *.mpy > /src/gupy/source/py/frozen_module.c
 
 # compile the firmware
 WORKDIR /src/gupy

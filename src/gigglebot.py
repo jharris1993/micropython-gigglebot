@@ -2,22 +2,39 @@ import microbit
 import ustruct
 from micropython import const
 
-_GIGGLEBOT_ADDRESS      = const(0x04)
+# _GIGGLEBOT_ADDRESS      = const(0x04)
 
-_GET_FIRMWARE_VERSION   = const(b'\x01')
-_GET_MANUFACTURER       = const(b'\x02')
-_GET_BOARD              = const(b'\x03')
-_GET_VOLTAGE_BATTERY    = const(b'\x04')
-_GET_LINE_SENSORS       = const(b'\x05')
-_GET_LIGHT_SENSORS      = const(b'\x06')
-_GET_MOTOR_STATUS_RIGHT = const(b'\x07')
-_GET_MOTOR_STATUS_LEFT  = const(b'\x08')
-_SET_MOTOR_POWER        = const(b'\x09')
-_SET_MOTOR_POWERS       = const(b'\x0a')
-_GET_VOLTAGE_RAIL       = const(b'\x0b')
+# _GET_FIRMWARE_VERSION   = const(0x01)
+# _GET_MANUFACTURER       = const(0x02)
+# _GET_BOARD              = const(0x03)
+# _GET_VOLTAGE_BATTERY    = const(0x04)
+# _GET_LINE_SENSORS       = const(0x05)
+# _GET_LIGHT_SENSORS      = const(0x06)
+# _GET_MOTOR_STATUS_RIGHT = const(0x07)
+# _GET_MOTOR_STATUS_LEFT  = const(0x08)
+# _SET_MOTOR_POWER        = const(0x09)
+# _SET_MOTOR_POWERS       = const(0x0a)
+# _GET_VOLTAGE_RAIL       = const(0x0b)
 
-MOTOR_LEFT              = const(0x01)
-MOTOR_RIGHT             = const(0x02)
+# MOTOR_LEFT              = const(0x01)
+# MOTOR_RIGHT             = const(0x02)
+
+_GIGGLEBOT_ADDRESS      = b'\x04'
+
+_GET_FIRMWARE_VERSION   = b'\x01'
+_GET_MANUFACTURER       = b'\x02'
+_GET_BOARD              = b'\x03'
+_GET_VOLTAGE_BATTERY    = b'\x04'
+_GET_LINE_SENSORS       = b'\x05'
+_GET_LIGHT_SENSORS      = b'\x06'
+_GET_MOTOR_STATUS_RIGHT = b'\x07'
+_GET_MOTOR_STATUS_LEFT  = b'\x08'
+_SET_MOTOR_POWER        = b'\x09'
+_SET_MOTOR_POWERS       = b'\x0a'
+_GET_VOLTAGE_RAIL       = b'\x0b'
+
+MOTOR_LEFT              = b'\x01'
+MOTOR_RIGHT             = b'\x02'
 
 _MOTOR_FLOAT            = const(-128)
 
