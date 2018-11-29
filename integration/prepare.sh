@@ -2,12 +2,12 @@
 
 set -ev
 
-js-yaml changelog.yaml > changelog.json
+# js-yaml changelog.yaml > changelog.json
 last_tag=$(git describe --tags --abbrev=0)
 
 if [[ $last_tag ]]; then
-    node release.js v0.0.0
+    node $TRAVIS_BUILD_DIR/integration/release.js v0.0.0
 else
-    node release.js $last_tag
+    node $TRAVIS_BUILD_DIR/integration/release.js $last_tag
 fi
 
