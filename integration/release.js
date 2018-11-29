@@ -2,8 +2,8 @@ const jsonfile = require('jsonfile');
 const fs = require('fs');
 var lastTag = process.argv[2];
 
-const file = 'changelog.json';
-const output = 'tag';
+const file = '../changelog.json';
+const output = '../tag';
 
 console.log("checking a new version in changelogs")
 
