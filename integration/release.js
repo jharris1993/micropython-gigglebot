@@ -5,7 +5,7 @@ var lastTag = process.argv[2];
 var file = "";
 var output = "";
 
-if (process.env.TRAVIS_BUILD_DIR !== "") {
+if (process.env.TRAVIS_BUILD_DIR !== undefined) {
     file = `${process.env.TRAVIS_BUILD_DIR}/integration/changelog.json`;
     output = `${process.env.TRAVIS_BUILD_DIR}/integration/tag`;
 } else {
@@ -117,7 +117,7 @@ jsonfile.readFile(file, function(err, changelogs) {
     const winnerTag = getWinnerTag(lastTag, curatedTags);
     console.log('highest tag of all (including the one in the repo) is', winnerTag);
 
-    if (lastTag.major === winnerTag.major && lastTag.minor === lastTag.minor && lastTag.patch === lastTag.patch) {
+    if (lastTag.major === winnerTag.major && lastTag.minor === winnerTag.minor && lastTag.patch === winnerTag.patch) {
         console.log('there\'s no tag in changelog higher than the latest one in the repo');
         process.exit(3);
     }
