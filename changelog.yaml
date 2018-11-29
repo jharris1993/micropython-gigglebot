@@ -1,0 +1,11 @@
+v0.1.0:
+  title: "This is some odd title"
+  body:
+    Improvements:
+      - Improvement 1
+      - Improvement 2
+    Fixes:
+      - Fixed problem number 2 that caused x when y did that
+      - Reverted to some old setting in order to prevent that
+
+v0.1.2:

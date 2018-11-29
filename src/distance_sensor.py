@@ -93,7 +93,7 @@ _DEFAULT_ADDRESS                             = const(0x29)
 __VL53L0X_VCSEL_PERIOD_RANGE_PRE             = const(0x00)
 __VL53L0X_VCSEL_PERIOD_RANGE_FINAL           = const(0x01)
 
-class VL53L0X():
+class DistanceSensor():
 
     io_timeout = 0
     did_timeout = False
@@ -137,7 +137,8 @@ class VL53L0X():
         write(self.addr, b'\x60' + ustruct.pack('B', (read(self.addr, 1)[0] | 0x12)))
 
         # set final range signal rate limit to 0.25 MCPS (million counts per second)
-        self.__set_signal_rate_limit(0.25)
+        # but change it to 0.1 as specified in the DI-Sensors library
+        self.__set_signal_rate_limit(0.1)
 
         write(self.addr, b'\x01' + b'\xff')
 
@@ -330,6 +331,9 @@ class VL53L0X():
 
         self.__set_timeout(timeout)     # set the timeout
 
+        self.__set_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_PRE, 18)
+        self.__set_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_FINAL, 14)
+
         collect()
 
     def __set_address(self, address):
@@ -366,10 +370,10 @@ class VL53L0X():
         write(self.addr, b'\x94\x6b')
         write(self.addr, b'\x83\x00')
 
-        self.__start_timeout()
+        self.timeout_start = ticks_ms()
         write(self.addr, b'\x83')
         while(read(self.addr, 1) == b'\x00'):
-            if(self.__check_timeout_expired()):
+            if self.io_timeout > 0 and (ticks_ms() - self.timeout_start) > self.io_timeout:
                 return 0, 0, False
             else:
                 write(self.addr, b'\x83')
@@ -392,14 +396,6 @@ class VL53L0X():
         write(self.addr, b'\x80\x00')
 
         return count, type_is_aperture, True
-
-    def __check_timeout_expired(self):
-        if(self.io_timeout > 0 and (ticks_ms() - self.timeout_start) > self.io_timeout):
-            return True
-        return False
-
-    def __start_timeout(self):
-        self.timeout_start = ticks_ms()
 
     def __get_measurement_timing_budget(self):
         StartOverhead      = 1910 # note that this is different than the value in set_
@@ -569,10 +565,10 @@ class VL53L0X():
     def __perform_single_ref_calibration(self, vhv_init_byte):
         write(self.addr, b'\x00' + ustruct.pack('B', 0x01 | vhv_init_byte)) # VL53L0X_REG_SYSRANGE_MODE_START_STOP
 
-        self.__start_timeout()
+        self.timeout_start = ticks_ms()
         write(self.addr, b'\x13')
         while (read(self.addr, 1)[0] & 0x07) == 0:
-            if self.__check_timeout_expired():
+            if self.io_timeout > 0 and (ticks_ms() - self.timeout_start) > self.io_timeout:
                 return False
             else:
                 write(self.addr, b'\x13')
@@ -622,13 +618,13 @@ class VL53L0X():
     # Returns a range reading in millimeters when continuous mode is active
     # (read_range_single_millimeters() also calls this function after starting a
     # single-shot range measurement)
-    def read_range_continuous_millimeters(self):
-        self.__start_timeout()
+    def read_range_continuous(self):
+        self.timeout_start = ticks_ms()
         write(self.addr, b'\x13')
         while ((read(self.addr, 1)[0] & 0x07) == 0):
-            if self.__check_timeout_expired():
+            if self.io_timeout > 0 and (ticks_ms() - self.timeout_start) > self.io_timeout:
                 self.did_timeout = True
-                raise OSError("read_range_continuous_millimeters timeout")
+                raise OSError("read_range_continuous timeout")
             else:
                 write(self.addr, b'\x13')
 
@@ -639,9 +635,9 @@ class VL53L0X():
 
         write(self.addr, b'\x0b' + b'\x01')
 
-        return range
+        return range[0]
 
-    def read_range_single_millimeters(self):
+    def read_range_single(self):
         write(self.addr, b'\x80\x01')
         write(self.addr, b'\xff\x01')
         write(self.addr, b'\x00\x00')
@@ -653,15 +649,15 @@ class VL53L0X():
         write(self.addr, b'\x00' + b'\x01')
 
         # "Wait until start bit has been cleared"
-        self.__start_timeout()
+        self.timeout_start = ticks_ms()
         write(self.addr, b'\x00')
         while (read(self.addr, 1)[0] & 0x01):
-            if self.__check_timeout_expired():
+            if self.io_timeout > 0 and (ticks_ms() - self.timeout_start) > self.io_timeout:
                 self.did_timeout = True
-                raise OSError("read_range_single_millimeters timeout")
+                raise OSError("read_range_single timeout")
             else:
                 write(self.addr, b'\x00')
-        return self.read_range_continuous_millimeters()
+        return self.read_range_continuous()
 
     def timeout_occurred(self):
         tmp = self.did_timeout
@@ -814,31 +810,3 @@ class VL53L0X():
     # based on VL53L0X_encode_vcsel_period()
     def __encode_vcsel_period(self, period_pclks):
         return((period_pclks >> 1) - 1)
-
-class DistanceSensor():
-    def __init__(address = 0x29, timeout = 500):
-        self.VL53L0X = VL53L0X(address, timeout)
-
-        self.VL53L0X.__set_signal_rate_limit(0.1)
-        self.VL53L0X.__set_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_PRE, 18)
-        self.VL53L0X.__set_vcsel_pulse_period(__VL53L0X_VCSEL_PERIOD_RANGE_FINAL, 14)
-
-    def start_continuous(self, period_ms = 0):
-        self.VL53L0X.start_continuous()
-    
-    def read_range_continuous(self):
-        return self.VL53L0X.read_range_continuous_millimeters()
-    
-    def read_range_single(self, safe_infinity = True):
-        value = self.VL53L0X.read_range_single_millimeters()
-
-        if safe_infinity and value < 8190:
-            for i in b'\x00\x01\x02':
-                value = self.VL53L0X.read_range_single_millimeters()
-                if value >= 8190:
-                    return value
-
-        return value
-
-    def timeout_occurred(self):
-        return self.VL53L0X.timeout_occurred()

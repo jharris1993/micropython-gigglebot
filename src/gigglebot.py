@@ -19,7 +19,7 @@ from micropython import const
 # MOTOR_LEFT              = const(0x01)
 # MOTOR_RIGHT             = const(0x02)
 
-_GIGGLEBOT_ADDRESS      = b'\x04'
+_GIGGLEBOT_ADDRESS      = const(0x04)
 
 _GET_FIRMWARE_VERSION   = b'\x01'
 _GET_MANUFACTURER       = b'\x02'

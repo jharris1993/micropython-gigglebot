@@ -64,7 +64,7 @@ RUN make && cp ./mpy-cross /usr/bin
 # create the bytecode for our modules
 WORKDIR /src/tmp
 COPY src/* ./
-RUN for module in $(ls *.py*); do mpy-cross $module || exit 1; done
+RUN for module in $(ls *.py); do mpy-cross $module || exit 1; done
 
 # generate the c code of our module and place it in the right dir to be compiled
 RUN python /src/upy/tools/mpy-tool.py -f -q /src/gupy/inc/genhdr/qstrdefs.preprocessed.h *.mpy > /src/gupy/source/py/frozen_module.c
