@@ -2,12 +2,15 @@ const jsonfile = require('jsonfile');
 const fs = require('fs');
 var lastTag = process.argv[2];
 
+var file = "";
+var output = "";
+
 if (process.env.TRAVIS_BUILD_DIR !== "") {
-    const file = `${process.env.TRAVIS_BUILD_DIR}/integration/changelog.json`;
-    const output = `${process.env.TRAVIS_BUILD_DIR}/integration/tag`;
+    file = `${process.env.TRAVIS_BUILD_DIR}/integration/changelog.json`;
+    output = `${process.env.TRAVIS_BUILD_DIR}/integration/tag`;
 } else {
-    const file = 'changelog.json';
-    const output = 'tag';
+    file = 'changelog.json';
+    output = 'tag';
 }
 
 console.log("checking a new version in changelogs")
