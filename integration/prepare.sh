@@ -2,7 +2,7 @@
 
 set -ev
 
-# js-yaml changelog.yaml > changelog.json
+js-yaml $TRAVIS_BUILD_DIR/changelog.yaml > changelog.json
 last_tag=$(git describe --tags --abbrev=0)
 
 if [[ $last_tag ]]; then
