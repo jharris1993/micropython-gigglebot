@@ -1,6 +1,5 @@
 language: node_js
 git:
-  depth: false
   submodules: true
 services:
   - docker
