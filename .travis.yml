@@ -5,17 +5,18 @@ git:
   submodules: true
 services:
 - docker
+before_install:
+- sudo apt-get update -qq && apt-get install -y --no-install-recommends jq
 install:
 - npm install -g js-yaml
 - npm install jsonfile
-- apt-get update -qq && apt-get install -y --no-install-recommends jq
 before_script:
 - chmod +x ./integration/prepare.sh && ./integration/prepare.sh
 script:
 - chmod +x build.sh && ./build.sh
 deploy:
 - provider: script
-  script: bash integration/deploy.sh
+  script: chmod +x ./integration/deploy.sh && ./integration/deploy.sh
   on:
     branch: master
 env:
