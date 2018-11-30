@@ -1,17 +1,25 @@
 language: node_js
 node_js:
-  - '8'
+- '8'
 git:
   submodules: true
 services:
-  - docker
+- docker
 install:
-  - npm install -g js-yaml
-  - npm install jsonfile
+- npm install -g js-yaml
+- npm install jsonfile
+- apt-get update -qq && apt-get install -y --no-install-recommends jq
 before_script:
-  - chmod +x ./integration/prepare.sh && ./integration/prepare.sh
+- chmod +x ./integration/prepare.sh && ./integration/prepare.sh
 script:
-  - chmod +x build.sh && ./build.sh
-after_success:
-after_failure:
+- chmod +x build.sh && ./build.sh
 deploy:
+- provider: script
+  script: bash integration/deploy.sh
+  on:
+    branch: master
+env:
+  global:
+  - secure: AXf7Vu2WZzQFFzG3zmtl1Hw4ugd1cl/nv7UFNCyNxEj2V0iRgD/i3JcVC3v0GentbbtMOLG3OoH9tA28uWb8procze9qRavcXCwbgaDQJnNf/qhqWp9ibw0i7sBNdkJIz+lo1UaYS3o/uMcOvfVv1GIWI9MDJKfs9JwaWKF0bBuPGx4BUitKVVU905vpM67Z03klUewmqrA2vsSfFkz0Ohg7fBuORCVO+10QNPTmqYMT3JFhmoZsjHC8ZbST3Ph2x5FkSfT5V5euwFeF7vh5nXuw3fXDhHOkAz0+WfH1BOkQViOY6r0T5RlTcWLEZaBPj4W2NmwuX+h4okD1N+cwXQXpAdROt6k9kuVc/SfSddP5KhqqObHTu4Y0FWCwYGpc0lVhuFBSeENS2qEyM5ZNnSWqE6uw2tnSxpAjvn9Fk1ufHmI4zMmOfYCImPXBrwjQ2kGrgPylc8ywXnzxol3l3EG4+2Z0ZTDtkMiSmo8nOnagy8W8ngSzf4HaoigIxtMoZsVCG0ADPMaNMvlS9cZGBTVCun3x8PNofwY0PTZ1BVWx6ywDMD585QQh/THrxl2b2/AwD5fZWJd6iJ+PuddKXbAWUrVbVaSlnGlW7tjJH/fRbsx+pFSVHdvl5Xf+qZfbnLLsz9I/KmRUDcPPLzp8uVmU+WEkb3NmlAkpMnHL4c8=
+  - secure: ISfch5MRGEZBNJ2GsiwyGnjEBexlGYK53ITKk17Qz4ZdUPEAKAwQHWjflNRVjTE643olBNCBVFF6PQSLu2Onl2xX2HD2SyxlrCPbx1AxZQt9Ytlp6PEx0iNzX4fGT9x6X8YrkpyHBnLqTUSV2c2K3pWb+82Lwzq7deGNo6t6wwjImdjLdpq8LJrZETdgVuRl4fqbCQ3p1q4LZQc5d1c1RnTDimxYhoYa8tq+HEhdd6v1fObrNv4/NgL+ji0W4mUvJfAeqJWhJ9eP8aYvY0D0Bxt74V5WuWF79pu/ysE26Y0lhCGrB5LtjCXvExRXRoepTj00e3auj78N/gPoELbOmPkm33CvtyVL/aSHh+1/jFl6Jj7KgeJpTWvyFk8L/0oeDZjCRQXEcSPpBrE0gC3tOtBL3CYDZw1DJL1wb7FzLGwk3jC7FEJteTU60PHZ2Owz/QuFK8qfjhmmaU0BZfm+nfx+YkE758XjwK8H2oLDGrn57L7MiYTVTeib/aCHURXCC8r1s2Uy1OtSH6eUigr8t84uXyZ3e7VDTexhwwVkF5/CBbBJspQZHvrXVMhOyjOwbzcNOnB3pmInBN4/V/Oeyo/+/faizC36fMdNymdmiqevOZSWLuH7z/zaeIpA+u+veKMHJxxI+HKiZA1jMXKYm8iaSen1c5dpgMlyrkcJSuc=
+  - secure: MCQdydkKGA0MR87KIHE5izEJTmnxBP8HSA8203iAe8gds7axlUldD9wg90YpCSFAUqrCiAuMJSDVwaAB76SYrcK6GX2keRrTSX345Kf6y8obyZjJpDyD0b0XNP1fRR1t1K5MdyO2K73TSz8S3tl2y3IU3Ped0aGIKRUmKmMjLHBaLN/mY8yI9024tQJGaYCvcH1P76+8xdKvAR2LnYaxBZi+9oW9bdj1IZ+Wjs5ZVzqniEYEUlCYNsJwEPdADATIQVJ5N6Oh1eAnKKxUWVgCNris+jcMAZYqvFAU2JR4zG6ybTaFszjnPTvGJmxjBJp9KVPpiAdtPPa2ea1puP4RIIb3SecLzmkQf42WRyaJCAVnC2JA2X24AtRX6DxvR4S/ngtWYPnTqhUiCaNXmBCmXN7w9j8Gqn9U6hkCP/vo5OsLc3/ajcNCEWuS+XcTWeXiA2roJNL0AYbntHcWa9bSiE7jwXutsW+RH9erxZkyVCVFQ5vVeAZU9JmzyrFh3c6V68L3tVBRp+gRct6ogHzoQqe4I3433RJkkOEsU5wgilIheOIV4Oij6upXlmX/uszh7+IczKqKbKKxGD5QusXNk4drmp9LTi/vbU7XhSKveFHeZpqgvVRIUVfohpssvr/JyMd50gwSvhE0ib/Wcwzw46sVxf3dBA9RmI1DShbZ0lk=

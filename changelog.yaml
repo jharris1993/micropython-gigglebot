@@ -1,11 +1,5 @@
 v0.1.0:
-  title: "This is some odd title"
+  title: "First Release Ever"
   body:
-    Improvements:
-      - Improvement 1
-      - Improvement 2
-    Fixes:
-      - Fixed problem number 2 that caused x when y did that
-      - Reverted to some old setting in order to prevent that
-
-v0.1.2:
+    - Fix problem x
+    - And that one too

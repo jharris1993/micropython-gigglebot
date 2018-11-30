@@ -11,3 +11,5 @@ else
     node $TRAVIS_BUILD_DIR/integration/release.js $last_tag
 fi
 
+echo "Title of new release is \"$(cat $TRAVIS_BUILD_DIR/integration/title)\""
+cat $TRAVIS_BUILD_DIR/integration/changelog.md

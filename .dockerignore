@@ -1,4 +1,9 @@
-pyan/
-docs/
+/pyan
+/docs
+/build
+/integration
+.*
+build.sh
+changelog.yaml
 LICENSE
 README.md
