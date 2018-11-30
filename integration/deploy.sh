@@ -22,5 +22,5 @@ for item in $(ls build/*.tar.gz build/*.hex)
 do
     curl "$upload_url?name=$item&access_token=$GITHUB_TOKEN" \
         --header "Content-Type: application/octet-stream" \
-        --data-binary @"build/$item"
+        --data-binary @"$item"
 done

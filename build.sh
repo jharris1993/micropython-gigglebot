@@ -16,6 +16,6 @@ docker container cp gupy-container:/src/tmp/ build/
 # update cache image on docker hub
 docker image push $IMAGE_NAME
 
-tar -cvzf build/$(cat tag)-mpy-modules.tar.gz build/tmp/*.mpy
-tar -cvzf build/$(cat tag)-py-modules.tar.gz build/tmp/*.py
-mv build/firmware.hex build/$(cat tag)-gb-firmware.hex
+tar -cvzf build/$(cat $TRAVIS_BUILD_DIR/integration/tag)-mpy-modules.tar.gz build/tmp/*.mpy
+tar -cvzf build/$(cat $TRAVIS_BUILD_DIR/integration/tag)-py-modules.tar.gz build/tmp/*.py
+mv build/firmware.hex build/$(cat $TRAVIS_BUILD_DIR/integration/tag)-gb-firmware.hex
