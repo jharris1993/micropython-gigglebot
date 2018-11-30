@@ -4,7 +4,7 @@ set -ev
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 IMAGE_NAME=$DOCKER_USERNAME/gupy-build-cache:$TRAVIS_BRANCH
 
-docker image build -t $IMAGE_NAME --cache-from $IMAGE_NAME .
+docker image build -t $IMAGE_NAME --cache-from $IMAGE_NAME src
 [[ "$(docker ps -a | grep gupy-container)" ]] && docker container rm -f gupy-container
 docker container run --name gupy-container $IMAGE_NAME
 
