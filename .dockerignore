@@ -1,7 +1,8 @@
-/pyan
-/docs
+/.node_modules
 /build
 /integration
+/pyan
+/docs
 .*
 build.sh
 changelog.yaml
