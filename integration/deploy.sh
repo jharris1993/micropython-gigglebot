@@ -5,9 +5,9 @@ set -ev
 # create payload for release
 payload=$(
   jq --null-input \
-     --arg tag "$(cat $TRAVIS_BUILD_DIR/tag)" \
-     --arg name "$(cat $TRAVIS_BUILD_DIR/title)" \
-     --arg body "$(cat $TRAVIS_BUILD_DIR/changelog.md)" \
+     --arg tag "$(cat $TRAVIS_BUILD_DIR/integration/tag)" \
+     --arg name "$(cat $TRAVIS_BUILD_DIR/integration/title)" \
+     --arg body "$(cat $TRAVIS_BUILD_DIR/integration/changelog.md)" \
      '{ tag_name: $tag, name: $name, body: $body, draft: false }'
 )
 

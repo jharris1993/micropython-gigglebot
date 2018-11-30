@@ -15,7 +15,8 @@ before_script:
 script:
 - chmod +x build.sh && ./build.sh
 deploy:
-- provider: script
+  provider: script
+  skip_cleanup: true
   script: chmod +x ./integration/deploy.sh && ./integration/deploy.sh
   on:
     branch: master
