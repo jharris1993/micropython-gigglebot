@@ -17,7 +17,8 @@ function sanitize() {
 SANITIZED_BRANCH=$(sanitize $TRAVIS_BRANCH)
 
 # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-IMAGE_NAME=$DOCKER_USERNAME/gupy-build-cache:$SANITIZED_BRANCH
+# IMAGE_NAME=$DOCKER_USERNAME/gupy-build-cache:$SANITIZED_BRANCH
+IMAGE_NAME=gupy-build-cache:$SANITIZED_BRANCH
 
 # if docker_tag_exists $DOCKER_USERNAME/gupy-build-cache $SANITIZED_BRANCH; then
 #     docker image pull $IMAGE_NAME
