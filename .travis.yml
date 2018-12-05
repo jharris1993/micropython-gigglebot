@@ -30,7 +30,7 @@ deploy:
   script: chmod +x ./integration/deploy.sh && ./integration/deploy.sh
   on:
     branch: master
-    condition: "$TRAVIS_EVENT_TYPE" != "cron"
+    condition: "$TRAVIS_EVENT_TYPE != cron"
 env:
   global:
   - secure: AXf7Vu2WZzQFFzG3zmtl1Hw4ugd1cl/nv7UFNCyNxEj2V0iRgD/i3JcVC3v0GentbbtMOLG3OoH9tA28uWb8procze9qRavcXCwbgaDQJnNf/qhqWp9ibw0i7sBNdkJIz+lo1UaYS3o/uMcOvfVv1GIWI9MDJKfs9JwaWKF0bBuPGx4BUitKVVU905vpM67Z03klUewmqrA2vsSfFkz0Ohg7fBuORCVO+10QNPTmqYMT3JFhmoZsjHC8ZbST3Ph2x5FkSfT5V5euwFeF7vh5nXuw3fXDhHOkAz0+WfH1BOkQViOY6r0T5RlTcWLEZaBPj4W2NmwuX+h4okD1N+cwXQXpAdROt6k9kuVc/SfSddP5KhqqObHTu4Y0FWCwYGpc0lVhuFBSeENS2qEyM5ZNnSWqE6uw2tnSxpAjvn9Fk1ufHmI4zMmOfYCImPXBrwjQ2kGrgPylc8ywXnzxol3l3EG4+2Z0ZTDtkMiSmo8nOnagy8W8ngSzf4HaoigIxtMoZsVCG0ADPMaNMvlS9cZGBTVCun3x8PNofwY0PTZ1BVWx6ywDMD585QQh/THrxl2b2/AwD5fZWJd6iJ+PuddKXbAWUrVbVaSlnGlW7tjJH/fRbsx+pFSVHdvl5Xf+qZfbnLLsz9I/KmRUDcPPLzp8uVmU+WEkb3NmlAkpMnHL4c8=
