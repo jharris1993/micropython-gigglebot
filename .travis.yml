@@ -7,7 +7,7 @@ services:
 - docker
 before_install:
 - sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends jq
-- if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
+- if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load || exit 1"; fi
 install:
 - npm install -g js-yaml
 - npm install jsonfile
@@ -16,10 +16,7 @@ before_script:
 script:
 - chmod +x build.sh && ./build.sh
 before_cache:
-  - >
-    mkdir -p $HOME/docker && docker images -a --format '{{.Repository}}:{{.Tag}} {{.ID}}'
-    | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
-  - if [[ $TRAVIS_EVENT_TYPE == cron ]]; then rm -rf $HOME/docker/*; fi 
+  - chmod +x ./integration/store_cache.sh && ./integration/store_cache.sh
 cache:
   bundler: true
   directories:
