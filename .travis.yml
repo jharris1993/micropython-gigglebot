@@ -15,11 +15,11 @@ before_script:
 - chmod +x ./integration/prepare.sh && ./integration/prepare.sh
 script:
 - chmod +x build.sh && ./build.sh
-- if [[ "$TRAVIS_EVENT_TYPE" == "cron" ]]; then rm -rf $HOME/docker/*; fi 
 before_cache:
   - >
     mkdir -p $HOME/docker && docker images -a --format '{{.Repository}}:{{.Tag}} {{.ID}}'
     | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+  - if [[ $TRAVIS_EVENT_TYPE == cron ]]; then rm -rf $HOME/docker/*; fi 
 cache:
   bundler: true
   directories:
