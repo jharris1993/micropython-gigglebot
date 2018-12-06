@@ -13,11 +13,11 @@ Running the following commands are enough to build the firmware.
 docker image build -t gigglebot-micropython src
 docker container run --name gigglebot gigglebot-micropython
 docker container cp gigglebot:/src/gupy/build/firmware.hex build/
-docker container cp gigglebot:/src/tmp/* build/
+docker container cp gigglebot:/src/tmp/ build/
 ```
 
 This can take up to 5-8 minutes to finish so go grab a coffee. 
 
-When it's done, a `firmware.hex` will show up in `build` directory. Among this firmware, `mpy` and `py` files of the libraries that get compiled into the firmware are present.
+When it's done, a `firmware.hex` will show up in `build` directory. In the `build` directory there's also going to be a `tmp` directory containing `mpy` and `py` files of the libraries that get compiled into the firmware.
 
-The last thing to do is to copy paste the firmware to the microbit. 
+The last thing to do is to copy paste the `firmware.hex` to the microbit. 
