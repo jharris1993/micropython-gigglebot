@@ -40,5 +40,5 @@ docker image push $IMAGE_NAME
 pushd build
 tar -cvzf $(cat $TRAVIS_BUILD_DIR/integration/tag)-mpy-modules.tar.gz tmp/*.mpy
 tar -cvzf $(cat $TRAVIS_BUILD_DIR/integration/tag)-py-modules.tar.gz tmp/*.py
-mv firmware.hex "(cat $TRAVIS_BUILD_DIR/integration/tag)-dexterindustries-gb-firmware.hex
+mv firmware.hex $(cat $TRAVIS_BUILD_DIR/integration/tag)-dexterindustries-gb-firmware.hex
 popd
