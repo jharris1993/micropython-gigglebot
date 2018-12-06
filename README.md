@@ -1,4 +1,5 @@
-## GiggleBot MicroPython for the BBC Micro:bit
+## GiggleBot MicroPython for the BBC Micro:bit 
+[![Build Status](https://travis-ci.org/RobertLucian/micropython-gigglebot.svg?branch=master)](https://travis-ci.org/RobertLucian/micropython-gigglebot)
 
 This is the source code for MicroPython that's running on the BBC micro:bit + GiggleBot robot.
 

@@ -39,3 +39,7 @@ v0.2.3:
 When pushes are done on other branches, nothing gets deployed anywhere, but the build can still fail if:
 1. There are compilation errors in the firmware build - which is a good way to see if changing something in the code breaks the build.
 1. The changelog is not updated to the next version.
+
+## Avoiding the CI Build
+
+If you wish to skip the build on a commit, just add to its commit message `[ci skip]`. Note that in case multiple commits are pushed together, the skip command is effective only if it is present in the commit message of the HEAD commit.
