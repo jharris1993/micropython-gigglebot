@@ -1,11 +1,6 @@
 #!/bin/bash
 set -ev
 
-if [[ $TRAVIS_EVENT_TYPE == cron ]]; then
-   echo "skipping the build as this is a cron job and it's meant for cleaning the cache"
-   exit 0
-fi
-
 function sanitize() {
    local s="${1?need a string}" # receive input in first argument
    s="${s//[^[:alnum:]]/-}"     # replace all non-alnum characters to -

@@ -2,11 +2,6 @@
 
 set -ev
 
-if [[ $TRAVIS_EVENT_TYPE == cron ]]; then
-   echo "skipping the build as this is a cron job and it's meant for cleaning the cache"
-   exit 0
-fi
-
 js-yaml $TRAVIS_BUILD_DIR/changelog.yaml > $TRAVIS_BUILD_DIR/integration/changelog.json
 last_tag=$(git describe --tags --abbrev=0)
 
