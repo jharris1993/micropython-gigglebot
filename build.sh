@@ -32,11 +32,14 @@ mkdir build
 # copy the firmware
 docker container cp gupy-container:/src/gupy/build/firmware.hex build/
 # copy to build/tmp all py/mpy files
-docker container cp gupy-container:/src/tmp/ build/
+docker container cp gupy-container:/src/tmp/* build/
 
 # update cache image on docker hub
 docker image push $IMAGE_NAME
 
-tar -cvzf build/$(cat $TRAVIS_BUILD_DIR/integration/tag)-mpy-modules.tar.gz build/tmp/*.mpy
-tar -cvzf build/$(cat $TRAVIS_BUILD_DIR/integration/tag)-py-modules.tar.gz build/tmp/*.py
-mv build/firmware.hex build/$(cat $TRAVIS_BUILD_DIR/integration/tag)-gb-firmware.hex
+pushd build
+tar -cvzf $(cat $TRAVIS_BUILD_DIR/integration/tag)-mpy-modules.tar.gz *.mpy
+tar -cvzf $(cat $TRAVIS_BUILD_DIR/integration/tag)-py-modules.tar.gz *.py
+# mv *.tar.gz $TRAVIS_BUILD_DIR/build
+mv firmware.hex "(cat $TRAVIS_BUILD_DIR/integration/tag)-dexterindustries-gb-firmware.hex
+popd

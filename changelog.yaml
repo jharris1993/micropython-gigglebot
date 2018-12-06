@@ -1,6 +1,12 @@
 v0.1.0:
-  title: "First Release Ever"
+  title: GiggleBot MicroPython Firmware v0.1.0
   body:
-    - Fix problem x
-    - And that one too
-    - I like bunnies
+    - Came up with the solution to integrate python modules directly within the firmware of the microbit.
+      More details can be seen here https://github.com/bbcmicrobit/micropython/issues/555.
+    - Enabled the import of frozen modules, pre-compiled python modules and `memoryview` class.
+    - Automated the building instructions of the micropython firmware for the gigglebot/microbit. Used docker
+      to simply it even more and to allow for building it on Windows machines.
+    - Reduced the number of recursions to a minimum with the distance sensor library 
+      and made it not use much RAM memory when imported.
+    - Added the gigglebot library to this release.
+    - Added build server (with Travis-CI) and automated the release of new versions.
