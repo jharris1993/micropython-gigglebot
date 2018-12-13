@@ -16,24 +16,7 @@ import os
 import sys
 
 from shutil import copy
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('..'))
-
-if os.environ.get('READTHEDOCS') == 'True':
-    copy( '../../gigglebot_with_docs.py' , '../gigglebot.py')
-else:
-    copy( '..\\..\\gigglebot_with_docs.py' , '..\\gigglebot.py')
-
-# from mock import Mock as MagicMock
-# class Mock(MagicMock):
-#     @classmethod
-#     def __getattr__(cls, name):
-#             return MagicMock()
-
-# MOCK_MODULES = ['microbit']
-# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
-
+sys.path.insert(0, os.path.abspath('../../src'))
 
 # -- Project information -----------------------------------------------------
 
@@ -45,7 +28,6 @@ author = 'Dexter Industries'
 version = ''
 # The full version, including alpha/beta/rc tags
 release = ''
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -61,7 +43,7 @@ extensions = [
     'sphinx.ext.doctest',
 ]
 
-autodoc_mock_imports = ["microbit"]
+autodoc_mock_imports = ["microbit", "ustruct", "micropython", "utime", "gc"]
 
 autodoc_member_order = 'bysource'
 

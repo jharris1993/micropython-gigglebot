@@ -1,13 +1,15 @@
-Sensors tutorial
-================
+################
+Sensors Tutorial
+################
 
 The GiggleBot comes with a couple of onboard sensors:
 
 #. Two light sensors, near the front eyes LEDs.
 #. Two line sensors, on the underside of the line follower.
 
+******************************
 Light Sensors
--------------
+******************************
 
 The GiggleBot comes with two light sensors right in front of the LED on each eye. They are very small and easy to miss. 
 However, they are more versatile than the Micro:Bit's light sensor as they can be read together to detect which side is receiving more light.
@@ -27,8 +29,9 @@ And here's how to read just one side at a time:
    right = read_sensor(LIGHT_SENSOR, RIGHT)
 
 
+===============================
 Chase the Light
-^^^^^^^^^^^^^^^
+===============================
 
 This tutorial will turn the GiggleBot into a cat, following a spotlight on the 
 floor. Many cats do that when you shine a flashlight in front of them, they will 
@@ -124,8 +127,9 @@ You could detect when it gets dark or bright. Imagine the GiggleBot inside your
 closet. When someone opens the door, the sudden light can be detected. The GiggleBot 
 can let you know someone went through your things while you were away.
 
+******************************
 Line Sensors
-------------
+******************************
 
 In front of GiggleBot, attached to the body, there is a line follower sensor. 
 It contains two line sensors. You can spot them from the top of the line 
@@ -141,7 +145,7 @@ follower by two white dots. And from the bottom, they are identified as *R* and
 
 The easiest way of reading the sensors is as follow:
 
-.. code::
+.. code:: python
 
    from gigglebot import *
    left, right = read_sensor(LINE_SENSOR, BOTH)
@@ -151,8 +155,9 @@ and depend a lot on your environment. If you want to write a line follower
 robot, it is best to take a few readings first, to get a good idea of what
 numbers will represent a black line, and what numbers represent a white line.
 
+===============================
 Calibrating the Line Follower
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+===============================
 
 Calibrating the line follower means figuring out which numbers get returned
 when it's over a black line, so that you can later code an actual line
@@ -177,8 +182,9 @@ circuit and take readings.
            microbit.display.scroll(left)
            microbit.display.scroll(right)
 
+===============================
 Follow the Line
-^^^^^^^^^^^^^^^
+===============================
 
 Once you have gotten readings from the line sensors, you are ready to code
 a line follower robot. 

@@ -1,21 +1,24 @@
-Tutorial for GiggleBot
-======================
+##################
+GiggleBot Tutorial
+##################
 
-This is a tutorial on how to control your gigglebot
+This is a tutorial on how to control your GiggleBot.
 
+******************************
 Take the GiggleBot on a stroll
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+******************************
+
 This first tutorial will demonstrate how to control the robot's movements. 
-The GiggleBot will :
+The GiggleBot will:
 
-#. set its speed to 75% of its maximum power (default is 50%)
-#. go forward for a second, 
-#. go backward for a second,
-#. wait for a second,
-#. turn left for half a second,
-#. turn right for half a second.
+#. Set its speed to 75% of its maximum power (default is 50%).
+#. Go forward for a second.
+#. Go backward for a second.
+#. Wait for a second.
+#. Turn left for half a second.
+#. Turn right for half a second.
 
-.. code::
+.. code:: python
 
    from gigglebot import *
    set_speed(75,75)
@@ -33,13 +36,13 @@ The GiggleBot will :
 
    :py:meth:`~gigglebot.init()` does not need to be called in this example as we are not making use of the lights on the robot.
 
-
+******************************
 Big Smile
-^^^^^^^^^
+******************************
 
 Let's use the Neopixels to turn the smile leds to a nice red, followed by green and then blue.
 
-.. code::
+.. code:: python
 
    from gigglebot import *
    init()
@@ -51,14 +54,15 @@ Let's use the Neopixels to turn the smile leds to a nice red, followed by green 
        set_smile(R=0,G=0,B=100)
        microbit.sleep(500)
 
+******************************
 Rainbow Smile
-^^^^^^^^^^^^^
+******************************
 
 You are not limited to the basic red,green,blue colors as they can be mixed. Let's create a rainbow of colors! 
 The :py:meth:`~gigglebot.init()` method returns a variable that lets you control each neopixel individually. 
 We'll make use of this to create a rainbow.
 
-.. code::
+.. code:: python
 
    from gigglebot import *
    strip=init()
@@ -72,13 +76,13 @@ We'll make use of this to create a rainbow.
    strip[8]=(68, 34, 153)
    strip.show()
 
-
+******************************
 Rainbow Cycle
-^^^^^^^^^^^^^
+******************************
 
 Here is how you can get the smile to cycle through the colours of the rainbow.
 
-.. code::
+.. code:: python
 
    from gigglebot import *
 
