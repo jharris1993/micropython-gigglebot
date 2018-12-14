@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 #############################################################
-Welcome to the GiggleBot Micropython Library's documentation!
+GiggleBot Micropython Library
 #############################################################
 
 This library is meant to be used with the `Mu editor <https://codewith.mu/>`_ , a `Micro:bit <https://microbit.org/>`_, and `GiggleBot <https://gigglebot.io>`_.
@@ -12,7 +12,8 @@ This library is meant to be used with the `Mu editor <https://codewith.mu/>`_ , 
 .. figure::  _static/images/GiggleBot-Line_Follower_900x.jpg
    :align:   center
 
-For step by step installation instructions and how to get started, please see the main `GiggleBot website <https://www.gigglebot.io/pages/program-the-gigglebot-robot-micropython>`_
+For step by step installation instructions and how to get started, please see the main `GiggleBot website <https://www.gigglebot.io/pages/program-the-gigglebot-robot-micropython>`_.
+You can also follow the instructions in this documentation by going over :ref:`here <getting-started>`. 
 
 For an introduction to MicroPython on the Micro:Bit, see the `official tutorial <https://microbit-micropython.readthedocs.io/en/latest/index.html>`_.
 
