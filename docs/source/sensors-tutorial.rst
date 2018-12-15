@@ -65,6 +65,7 @@ pressed by the user.
 How to Chase a Light:
 
 #. Take reading from both light sensors.
+#. Print the readings every 50 ms.
 #. Compare the readings, using `diff` to allow for small variations. You will most likely get absolutely identical readings, even if the light is mostly equal. Using a differential value helps stabilize the behavior. You can adapt to your own lighting conditions by changing this value.
 #. If the right sensor reads more than the left sensor plus the `diff` value, then we know it's brighter to the right. Turn right.
 #. If the left sensor reads more than the right sensor plus the `diff` value, then it's brighter to the left. Turn left.
@@ -75,48 +76,59 @@ How to Chase a Light:
 
 .. code::
 
-   from gigglebot import *
-   # value for the differential between the two sensors.
-   # you can change this value to make it more or less sensitive.
-   diff = 10
-   # display sleepy face
-   microbit.display.show(microbit.Image.ASLEEP)
-   # the following two lines resets the 'was_pressed' info 
-   # and discards any previous presses
-   microbit.button_a.was_pressed()
-   microbit.button_b.was_pressed()
+    from gigglebot import *
+    from utime import ticks_ms
+    # value for the differential between the two sensors.
+    # you can change this value to make it more or less sensitive.
+    diff = 10
+    # display sleepy face
+    microbit.display.show(microbit.Image.ASLEEP)
+    # the following two lines resets the 'was_pressed' info
+    # and discards any previous presses
+    microbit.button_a.was_pressed()
+    microbit.button_b.was_pressed()
+    # and also make sure the robot is stopped
+    stop()
 
-   # start first loop, waiting for user input
-   while True:
-       # test for user input
-       if microbit.button_a.was_pressed():
-           # game got started! Display much love
-           microbit.display.show(microbit.Image.HEART)
+    # variable to control how fast
+    # the sensors get printed 
+    counter = ticks_ms()
 
-           # start game loop
-           while True:
-               # read both sensors
-               left, right = read_sensor(LIGHT_SENSOR, BOTH)
+    # start first loop, waiting for user input
+    while True:
+        # test for user input
+        if microbit.button_a.was_pressed():
+            # game got started! Display much love
+            microbit.display.show(microbit.Image.HEART)
 
-               # test if it's brighter to the right
-               if right > left+diff:
-                   turn(RIGHT)
+            # start game loop
+            while True:
+                # read both sensors
+                left, right = read_sensor(LIGHT_SENSOR, BOTH)
+                # and print these values every 50 ms
+                if ticks_ms() - 50 > counter:
+                    counter = ticks_ms()
+                    print((left, right))
+                
+                # test if it's brighter to the right
+                if right > left+diff:
+                    turn(RIGHT)
 
-               # test if it's brighter to the left 
-               elif left > right+diff:
-                   turn(LEFT)
+                # test if it's brighter to the left
+                elif left > right+diff:
+                    turn(LEFT)
 
-               # both sides being equal, go straight
-               else:
-                   drive(FORWARD)
+                # both sides being equal, go straight
+                else:
+                    drive(FORWARD)
 
-               # oh no, the game got interrupted
-               if microbit.button_b.is_pressed():
-                   stop()
-                   microbit.display.show(microbit.Image.ASLEEP)
+                # oh no, the game got interrupted
+                if microbit.button_b.is_pressed():
+                    stop()
+                    microbit.display.show(microbit.Image.ASLEEP)
 
-                   # this line here gets us out of the game loop
-                   break
+                    # this line here gets us out of the game loop
+                    break
 
 What else can be done with the light sensors?
 

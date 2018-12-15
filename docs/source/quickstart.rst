@@ -4,7 +4,7 @@
 Getting Started
 ###################
 
-The GiggleBot MicroPython library contains the following modules:
+The GiggleBot MicroPython firmware comes with the following modules:
 
 * :py:mod:`gigglebot` - contains an API to interface with the actual `GiggleBot`_: think motors, line sensor, light sensors, LEDs, servos, etc.
 * :py:mod:`gigglebot_advanced`- still an API to interface with the `GiggleBot`_, but slightly more advanced and useful for debugging purposes.
@@ -12,7 +12,7 @@ The GiggleBot MicroPython library contains the following modules:
 
 Each new release comes with the following artifacts:
 
-* A customized BBC micro:bit firmware that includes all the above modules in it.
+* A customized BBC micro:bit firmware that includes all the above modules in it - and we are calling it the GiggleBot firmware.
 * The minified modules. These modules were minified to take less space on the BBC micro:bit.
 * The pre-compiled modules (bytecodes) that no longer need to be compiled when they get imported on the BBC micro:bit.
 * And the modules in their natural state.

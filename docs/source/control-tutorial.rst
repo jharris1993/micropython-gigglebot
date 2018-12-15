@@ -36,6 +36,8 @@ The GiggleBot will:
 
    :py:meth:`~gigglebot.init()` does not need to be called in this example as we are not making use of the lights on the robot.
 
+.. image:: https://i.imgur.com/OqlhmPy.gif
+
 ******************************
 Big Smile
 ******************************
@@ -53,6 +55,8 @@ Let's use the Neopixels to turn the smile leds to a nice red, followed by green 
        microbit.sleep(500)
        set_smile(R=0,G=0,B=100)
        microbit.sleep(500)
+
+.. image:: https://i.imgur.com/f1wjuPc.gif
 
 ******************************
 Rainbow Smile
@@ -75,6 +79,8 @@ We'll make use of this to create a rainbow.
    strip[7]=(51,17,187)
    strip[8]=(68, 34, 153)
    strip.show()
+
+.. image:: https://i.imgur.com/gMySE5X.jpg
 
 ******************************
 Rainbow Cycle
@@ -121,5 +127,7 @@ Here is how you can get the smile to cycle through the colours of the rainbow.
        # wait a bit for the human eye to catch the colors in question
        microbit.sleep(100)
    # colors were taken from http://colrd.com/palette/22198/?download=css
+
+.. image:: https://i.imgur.com/7Xqa3fp.gif
 
 

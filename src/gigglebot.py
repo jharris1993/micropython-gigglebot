@@ -128,7 +128,7 @@ def turn(dir=LEFT, milliseconds=-1):
     if dir == LEFT: 
         microbit.i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack('BB', int(motor_power_left) & 0xFF, 0))
     if dir == RIGHT: 
-        microbit.i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack(0, int(motor_power_right) & 0xFF))
+        microbit.i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack('BB', 0, int(motor_power_right) & 0xFF))
     if milliseconds >= 0:
         microbit.sleep(milliseconds)
         stop()        
@@ -208,7 +208,7 @@ def read_sensor(which_sensor, which_side):
 
     """
     microbit.i2c.write(_GIGGLEBOT_ADDRESS, ustruct.pack('B', which_sensor))
-    buf = bytemicrobit.i2c.read(_GIGGLEBOT_ADDRESS, 3)
+    buf = microbit.i2c.read(_GIGGLEBOT_ADDRESS, 3)
     ustruct.pack_into('>HH', _BUFFER, 0, 1023 - (buf[0] << 2 | ((buf[2] & 0xC0) >> 6)), 1023 - (buf[1] << 2 | ((buf[2] & 0x30) >> 4)))
 
     if which_side == LEFT: 
