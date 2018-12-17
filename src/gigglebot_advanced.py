@@ -33,8 +33,8 @@ _SET_MOTOR_POWER        = b'\x09'
 _SET_MOTOR_POWERS       = b'\x0a'
 _GET_VOLTAGE_RAIL       = b'\x0b'
 
-MOTOR_LEFT              = b'\x01'
-MOTOR_RIGHT             = b'\x02'
+MOTOR_RIGHT             = b'\x01'
+MOTOR_LEFT              = b'\x02'
 
 _MOTOR_FLOAT            = const(-128)
 
@@ -51,7 +51,7 @@ class GiggleBot():
         
     def get_board(self):
         self.write(_GIGGLEBOT_ADDRESS, _GET_BOARD)
-        return self.read(_GIGGLEBOT_ADDRESS, 20)
+        return str(self.read(_GIGGLEBOT_ADDRESS, 20), 'utf-8').strip()
 
     def get_version_firmware(self):
         self.write(_GIGGLEBOT_ADDRESS, _GET_FIRMWARE_VERSION)
@@ -84,9 +84,9 @@ class GiggleBot():
         return ustruct.unpack('ff', self.buff)
         
     def set_motor_power(self, port, power):
-        self.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWER + ustruct.pack('Bb', port, power))
+        self.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWER + port + ustruct.pack('b', power))
         
-    def set_motor_powers(self, powerRight, powerLeft):
+    def set_motor_powers(self, powerLeft, powerRight):
         self.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack('bb', powerRight, powerLeft))
 
     def get_motor_status(self, port):
@@ -99,4 +99,4 @@ class GiggleBot():
         return array
 
     def reset_all(self):
-        self.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWER + ustruct.pack('Bb', MOTOR_LEFT + MOTOR_RIGHT, _MOTOR_FLOAT))
+        self.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWER + MOTOR_LEFT + MOTOR_RIGHT + ustruct.pack('b', _MOTOR_FLOAT))
