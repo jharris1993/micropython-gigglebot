@@ -2,23 +2,6 @@ import microbit
 import ustruct
 from micropython import const
 
-# _GIGGLEBOT_ADDRESS      = const(0x04)
-
-# _GET_FIRMWARE_VERSION   = const(0x01)
-# _GET_MANUFACTURER       = const(0x02)
-# _GET_BOARD              = const(0x03)
-# _GET_VOLTAGE_BATTERY    = const(0x04)
-# _GET_LINE_SENSORS       = const(0x05)
-# _GET_LIGHT_SENSORS      = const(0x06)
-# _GET_MOTOR_STATUS_RIGHT = const(0x07)
-# _GET_MOTOR_STATUS_LEFT  = const(0x08)
-# _SET_MOTOR_POWER        = const(0x09)
-# _SET_MOTOR_POWERS       = const(0x0a)
-# _GET_VOLTAGE_RAIL       = const(0x0b)
-
-# MOTOR_LEFT              = const(0x01)
-# MOTOR_RIGHT             = const(0x02)
-
 _GIGGLEBOT_ADDRESS      = const(0x04)
 
 _GET_FIRMWARE_VERSION   = b'\x01'
@@ -99,4 +82,4 @@ class GiggleBot():
         return array
 
     def reset_all(self):
-        self.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWER + MOTOR_LEFT + MOTOR_RIGHT + ustruct.pack('b', _MOTOR_FLOAT))
+        self.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack('bb', _MOTOR_FLOAT, _MOTOR_FLOAT))
