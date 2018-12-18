@@ -198,13 +198,13 @@ def read_sensor(which_sensor, which_side):
     :param int which_sensor: Reads the light sensors :py:attr:`~gigglebot.LIGHT_SENSOR` (6), or the line sensors :py:attr:`~gigglebot.LINE_SENSOR` (5). Values are from **0** to **1023**.
     :param int which_side: Reads :py:attr:`~gigglebot.LEFT` (0), :py:attr:`~gigglebot.RIGHT` (1), or :py:attr:`~gigglebot.BOTH` (2) sensors. When reading both sensors, an array will be returned.
 
-    :returns: Either an integer or an array of integers (left, then right).
+    :returns: Either an integer or an array of integers (right, then left).
 
     You can read the sensors this way:
 
     .. code::
 
-       left, right = read_sensor(LIGHT_SENSOR, BOTH)
+       right, left = read_sensor(LIGHT_SENSOR, BOTH)
 
     """
     microbit.i2c.write(_GIGGLEBOT_ADDRESS, ustruct.pack('B', which_sensor))

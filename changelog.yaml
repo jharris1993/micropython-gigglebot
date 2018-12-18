@@ -2,9 +2,11 @@ v0.2.0:
   title: GiggleBot MicroPython Firmware v0.2.0
   body:
     - Add sphinx documentation for readthedocs.org which includes some tutorials, the API description
-      of the gigglebot.py/gigglebot_advanced.py/distance_sensor.py modules.
-    - Add less complex module called the gigglebot.py.
-    - Optimize gigglebot.py module for the microbit board to use less RAM.
+      of the `gigglebot.py`/`gigglebot_advanced.py`/`distance_sensor.py` modules.
+    - Add less complex module called the `gigglebot.py` and rename the old one to `gigglebot_advanced.py`.
+    - Optimize `gigglebot.py` module for the microbit board to use less RAM.
+    - Fix formatting and semantic issues in the documentation.
+    - Fix syntax and logic problems in `gigglebot_advanced.py` module (which is the old module called `gigglebot.py`).
 v0.1.0:
   title: GiggleBot MicroPython Firmware v0.1.0
   body:

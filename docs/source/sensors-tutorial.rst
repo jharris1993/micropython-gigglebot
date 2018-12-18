@@ -14,13 +14,15 @@ Light Sensors
 The GiggleBot comes with two light sensors right in front of the LED on each eye. They are very small and easy to miss. 
 However, they are more versatile than the Micro:Bit's light sensor as they can be read together to detect which side is receiving more light.
 
+.. image:: https://i.imgur.com/WsLwsDG.jpg
+
 The main method to query the light sensors is :py:meth:`~gigglebot.read_sensor()`.  The same method is used for both light sensors and line sensors. 
 
 Here's how to read both light sensors in one call:
 
 .. code::
 
-   left, right = read_sensor(LIGHT_SENSOR, BOTH)
+   right, left = read_sensor(LIGHT_SENSOR, BOTH)
 
 And here's how to read just one side at a time:
 
@@ -41,36 +43,36 @@ your GiggleBot by using a flashlight.
 This is how to use this project:
 
 #. Start GiggleBot and wait for sleepy face to appear on the Micro:Bit.
-#. Press button A to start the Chase the Light game (heart will replace the sleepy face).
+#. Press *button A* to start the Chase the Light game (heart will replace the sleepy face).
 #. Chase the light as long as you want.
-#. Press button B to stop the GiggleBot and display sleepy face again.
+#. Press *button B* to stop the GiggleBot and display sleepy face again.
 
 First, a bit of explanation on the algorithm being used here.
 
 On starting the GiggleBot, the Micro:Bit will:
 
-#. Assign a value to the `diff` variable (here it is using 10).
+#. Assign a value to the ``diff`` variable (here it is using 10).
 #. Display a sleepy face image.
 #. Resets whatever readings from the buttons it might have had.
 #. Start a forever loop.
 
 This forever loop only waits for one thing: 
-for the user to press button A, and that's when the light chasing begins.
+for the user to press *button A*, and that's when the light chasing begins.
 
-As soon as button A is pressed, the Micro:Bit will display a heart as it's 
+As soon as *button A* is pressed, the Micro:Bit will display a heart as it's 
 quite happy to be active! And then it starts a second forever loop! This second 
-forever loop is the actual Light Chasing game. It will end when button B is 
+forever loop is the actual Light Chasing game. It will end when *button B* is 
 pressed by the user.
 
 How to Chase a Light:
 
 #. Take reading from both light sensors.
 #. Print the readings every 50 ms.
-#. Compare the readings, using `diff` to allow for small variations. You will most likely get absolutely identical readings, even if the light is mostly equal. Using a differential value helps stabilize the behavior. You can adapt to your own lighting conditions by changing this value.
-#. If the right sensor reads more than the left sensor plus the `diff` value, then we know it's brighter to the right. Turn right.
-#. If the left sensor reads more than the right sensor plus the `diff` value, then it's brighter to the left. Turn left.
+#. Compare the readings, using ``diff`` to allow for small variations. You will most likely get absolutely identical readings, even if the light is mostly equal. Using a differential value helps stabilize the behavior. You can adapt to your own lighting conditions by changing this value.
+#. If the right sensor reads more than the left sensor plus the ``diff`` value, then we know it's brighter to the right. Turn right.
+#. If the left sensor reads more than the right sensor plus the ``diff`` value, then it's brighter to the left. Turn left.
 #. If there isn't that much of a difference between the two sensors, go straight. 
-#. If button B gets pressed at any time, stop the robot, change sleepy face, and get out of this internal loop. The code will fall back to the first loop, ready for another game.
+#. If *button B* gets pressed at any time, stop the robot, change sleepy face, and get out of this internal loop. The code will fall back to the first loop, ready for another game.
 
 
 
@@ -104,7 +106,7 @@ How to Chase a Light:
             # start game loop
             while True:
                 # read both sensors
-                left, right = read_sensor(LIGHT_SENSOR, BOTH)
+                right, left = read_sensor(LIGHT_SENSOR, BOTH)
                 # and print these values every 50 ms
                 if ticks_ms() - 50 > counter:
                     counter = ticks_ms()
@@ -129,6 +131,8 @@ How to Chase a Light:
 
                     # this line here gets us out of the game loop
                     break
+
+.. image:: https://i.imgur.com/X4MdLOm.gif
 
 What else can be done with the light sensors?
 
@@ -160,7 +164,7 @@ The easiest way of reading the sensors is as follow:
 .. code:: python
 
    from gigglebot import *
-   left, right = read_sensor(LINE_SENSOR, BOTH)
+   right, left = read_sensor(LINE_SENSOR, BOTH)
 
 The lower the number, the darker it is reading. Values can go from 0 to 1023 
 and depend a lot on your environment. If you want to write a line follower 
@@ -179,7 +183,7 @@ The best approach for this is to get readings in various parts of your line,
 from both sensors, for both the black line and the background color.
 
 The following code will display the values onto the microbit leds when you 
-press button A, allowing you to manually position your robot around your 
+press *button A*, allowing you to manually position your robot around your 
 circuit and take readings.
 
 .. code::
@@ -190,7 +194,7 @@ circuit and take readings.
    microbit.button_a.was_pressed()
    while True:
        if microbit.button_a.is_pressed():
-           left, right = read_sensor(LINE_SENSOR, BOTH)
+           right, left = read_sensor(LINE_SENSOR, BOTH)
            microbit.display.scroll(left)
            microbit.display.scroll(right)
 
@@ -233,14 +237,14 @@ we follow the line.
    while True:
        # if both buttons are pressed, run calibration code
        if microbit.button_a.is_pressed() and microbit.button_b.is_pressed():
-           left, right = read_sensor(LINE_SENSOR, BOTH)
+           right, left = read_sensor(LINE_SENSOR, BOTH)
            microbit.display.scroll(left)
            microbit.display.scroll(right)
        # if button A is pressed run line following code until button B gets pressed
        # or until we're over white/background
        if microbit.button_a.is_pressed():
            while not microbit.button_b.is_pressed():
-               left, right = read_sensor(LINE_SENSOR, BOTH)
+               right, left = read_sensor(LINE_SENSOR, BOTH)
                if left < threshold and right < threshold:
                    # both sensors detect the line
                    strip[2]=(0,255,0)
@@ -267,3 +271,7 @@ we follow the line.
                    strip.show()
                    turn(LEFT)
            stop()
+
+.. image:: https://i.imgur.com/ZYFwQ0l.gif
+
+*photo courtesy of* `Lisa Rode <https://twitter.com/roderunners/status/1026939403032244224?s=09>`_

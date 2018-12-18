@@ -41,6 +41,7 @@ release = ''
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
 ]
 
 autodoc_mock_imports = ["microbit", "ustruct", "micropython", "utime", "gc"]
@@ -182,3 +183,10 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+
+
+# Example configuration for intersphinx: refer to the Python standard library.
+#intersphinx_mapping = {'https://docs.python.org/': None, }
+intersphinx_mapping = {
+    'di_sensors' : ('http://di-sensors.readthedocs.io/en/master/', None)
+}
