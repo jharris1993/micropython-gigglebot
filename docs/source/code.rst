@@ -19,7 +19,7 @@ Distance Sensor
 As you can see here, the `Distance Sensor`_ is the same sensor used on the `GoPiGo3`_ and on any DexterIndustries
 board that we support and that has a Grove port with an `I2C` interface on it.
 
-Because of this, we've spend lots of energy trying to make the following API of the `Distance Sensor`_ identical to the one in the DI-Sensors documentation :py:class:`di_sensors.distance_sensor.DistanceSensor`,
+Because of this, we've spend lots of time trying to make the following API of the `Distance Sensor`_ identical to the one in the DI-Sensors documentation :py:class:`di_sensors.distance_sensor.DistanceSensor`,
 so that the transition from either platform can be as seamless as possible.
 
 .. automodule:: distance_sensor
