@@ -16,16 +16,15 @@ At the end of these short instructions, you will be able to run the following sn
 .. code-block:: python
 
     from gigglebot import *
-    from utime import sleep_ms
 
     # initialize the neopixels on the GiggleBot
     init()
 
     while True:
         set_eyes() # set GiggleBot eyes to blue (by default)
-        sleep_ms(250)
+        microbit.sleep(250) # wait 250 msec
         pixels_off() # turn off the GiggleBot eyes
-        sleep_ms(250)
+        microbit.sleep(250) # wait 250 msec
       
 
 ************************

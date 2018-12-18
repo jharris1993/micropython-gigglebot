@@ -2,6 +2,10 @@
 API
 ####
 
+Time for reading the `GiggleBot`_ modules' API.
+
+.. image:: https://media.giphy.com/media/3ov9jNziFTMfzSumAw/giphy.gif
+
 **************************
 GiggleBot - Regular Module
 **************************

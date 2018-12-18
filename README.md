@@ -1,16 +1,17 @@
 ## GiggleBot MicroPython for the BBC Micro:bit 
-[![Build Status](https://travis-ci.org/RobertLucian/micropython-gigglebot.svg?branch=master)](https://travis-ci.org/RobertLucian/micropython-gigglebot)
-[![Documentation Status](https://readthedocs.org/projects/gigglebot-dev/badge/?version=develop)](https://gigglebot-dev.readthedocs.io/en/develop/?badge=develop)
+[![Build Status](https://travis-ci.org/RobertLucian/micropython-gigglebot.svg?branch=master)](https://travis-ci.org/RobertLucian/micropython-gigglebot) [![Documentation Status](https://readthedocs.org/projects/gigglebot-dev/badge/?version=develop)](https://gigglebot-dev.readthedocs.io/en/develop/?badge=develop)
 
-This is the source code for MicroPython that's running on the BBC micro:bit + GiggleBot robot.
+This is the repository for the MicroPython that's running on the BBC micro:bit + GiggleBot robot.
 
-This firmware, when compared to https://github.com/bbcmicrobit/micropython, has libraries to support the collection of sensors that go on a GiggleBot. Also, there are a couple of features enabled that allow the use of pre-compiled modules on the microbit and others that permit the better use of the memory.
+This firmware, when compared to [bbcmicrobit/micropython](https://github.com/bbcmicrobit/micropython), has libraries to support the collection of sensors that go on a GiggleBot. Also, there are a couple of features enabled that allow the use of pre-compiled modules on the microbit and others that permit the better use of the memory.
 
-![](static/gigglebot.jpg)
+Check the documentation for more details.
+
+![](docs/source/_static/images/GiggleBot-Line_Follower_900x.png)
 
 ## Building It
 
-Running the following commands are enough to build the firmware.
+Running the following commands are enough to build the firmware locally.
 ```bash
 docker image build -t gigglebot-micropython src
 docker container run --name gigglebot gigglebot-micropython
