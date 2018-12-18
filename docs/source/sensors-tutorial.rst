@@ -152,12 +152,10 @@ It contains two line sensors. You can spot them from the top of the line
 follower by two white dots. And from the bottom, they are identified as *R* and 
 *L* (for *right* and *left*)
 
-.. figure::  _static/images/GigglebotLineFollowingSensors.jpg
+.. image:: _static/images/GigglebotLineFollowingSensors.JPG
    :align:   center
-   :alt: sensors underneath the line follower
 
 *photo courtesy of Les Pounder*
-
 
 The easiest way of reading the sensors is as follow:
 
