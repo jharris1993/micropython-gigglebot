@@ -7,6 +7,7 @@ v0.2.0:
     - Optimize `gigglebot.py` module for the microbit board to use less RAM.
     - Fix formatting and semantic issues in the documentation.
     - Fix syntax and logic problems in `gigglebot_advanced.py` module (which is the old module called `gigglebot.py`).
+    - Minify python modules before integrating them into the firmware.
 v0.1.0:
   title: GiggleBot MicroPython Firmware v0.1.0
   body:

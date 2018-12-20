@@ -5,7 +5,7 @@ RUN apt-get update -qq && \
 RUN add-apt-repository -y ppa:team-gcc-arm-embedded/ppa && \
     apt-get update && \
     apt-get install gcc-arm-embedded cmake ninja-build srecord libssl-dev -y
-RUN pip install yotta
+RUN pip install yotta python-minifier==1.1.0
 
 ENV GUPY_HASH=b60f1382667aa86909a433aab9ba2739f4f71de3
 
@@ -64,6 +64,7 @@ RUN make && cp ./mpy-cross /usr/bin
 # create the bytecode for our modules
 WORKDIR /src/tmp
 COPY *.py ./
+RUN for module in $(ls *.py); do pyminify --remove-literal-statements $module > tmp.py || exit 1; rm $module && mv tmp.py $module; done
 RUN for module in $(ls *.py); do mpy-cross $module || exit 1; done
 
 # generate the c code of our module and place it in the right dir to be compiled
@@ -72,3 +73,6 @@ RUN python /src/upy/tools/mpy-tool.py -f -q /src/gupy/inc/genhdr/qstrdefs.prepro
 # compile the firmware
 WORKDIR /src/gupy
 RUN make all
+
+# print out the number of bytes used by the firmware
+RUN stat --printf='%s' build/bbc-microbit-classic-gcc-nosd/source/microbit-micropython.bin > /src/tmp/usedspace.txt

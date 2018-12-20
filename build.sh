@@ -42,5 +42,6 @@ tar -cvzf $(cat $TRAVIS_BUILD_DIR/integration/tag)-mpy-modules.tar.gz *.mpy
 tar -cvzf $(cat $TRAVIS_BUILD_DIR/integration/tag)-py-modules.tar.gz *.py
 cd ..
 mv tmp/*.tar.gz .
+mv tmp/usedspace.txt .
 mv firmware.hex $(cat $TRAVIS_BUILD_DIR/integration/tag)-dexterindustries-gb-firmware.hex
 popd
