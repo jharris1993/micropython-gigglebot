@@ -228,7 +228,7 @@ we follow the line.
    # reset all previous readings of button_a, and button_b
    # strictly speaking this is not necessary, it is just a safety thing
    button_a.was_pressed()
-   buttom_b.was_pressed()
+   button_b.was_pressed()
    display.show(Image.YES)
    strip=init()
    # speed needs to be set according to your line and battery level.

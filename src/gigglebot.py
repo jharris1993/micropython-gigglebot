@@ -1,4 +1,4 @@
-from ustruct import pack, unpack_from, pack_into
+from ustruct import pack, unpack, unpack_from, pack_into
 from micropython import const
 from microbit import pin8, pin13, pin14, i2c, sleep
 
