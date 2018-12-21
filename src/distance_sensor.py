@@ -94,12 +94,22 @@ __VL53L0X_VCSEL_PERIOD_RANGE_PRE             = const(0x00)
 __VL53L0X_VCSEL_PERIOD_RANGE_FINAL           = const(0x01)
 
 class DistanceSensor():
+    '''
+    Class for interfacing with the `Distance Sensor`_.
+    '''
 
     io_timeout = 0
     did_timeout = False
     addr = _DEFAULT_ADDRESS
 
-    def __init__(self, address = 0x29, timeout = 500): 
+    def __init__(self, address = 0x29, timeout = 500):
+        '''
+        Constructor for initializing a :py:class:`~distance_sensor.DistanceSensor` object.
+
+        :param int address = 0x29: Address of the Distance Sensor. Generally this address does not change.
+        :param int timeout = 500: Timeout value for when :py:meth:`~distance_sensor.DistanceSensor.read_range_continuous` is used.
+
+        '''
 
         try:
             write(self.addr, b'\xbf' + b'\x00')
@@ -588,6 +598,20 @@ class DistanceSensor():
     # takes a measurement.
     # based on VL53L0X_StartMeasurement()
     def start_continuous(self, period_ms = 0):
+        '''
+        Start taking continuous measurements.
+
+        Once this method is called, then the :py:meth:`~distance_sensor.DistanceSensor.read_range_continuous` method should be called periodically, depending on the value that was set to ``period_ms`` parameter.
+        
+        :param int period_ms = 0: The time between measurements. Can be set to anywhere between **20 ms** and **5 secs**.
+        :raises OSError: When it cannot communicate with the device.
+
+        The advantage of this method over the simple :py:meth:`~di_sensors.distance_sensor.DistanceSensor.read_range_single` method is that this method allows for faster reads. Therefore, this method should be used by those that
+        want maximum performance from the sensor.
+
+        Also, the greater the value set to ``period_ms``, the higher is the accuracy of the distance sensor.
+        
+        '''
         write(self.addr, b'\x80\x01')
         write(self.addr, b'\xff\x01')
         write(self.addr, b'\x00\x00')
@@ -619,6 +643,21 @@ class DistanceSensor():
     # (read_range_single_millimeters() also calls this function after starting a
     # single-shot range measurement)
     def read_range_continuous(self):
+        '''
+        Read the detected range while the sensor is taking continuous measurements at the set rate.
+
+        :returns: The detected range of the sensor as measured in millimeters. The range can go up to 2.3 meters.
+        :rtype: int
+        :raises OSError: When the distance sensor is not reachable or when the :py:meth:`~distance_sensor.DistanceSensor.start_continuous` hasn't been called before. This exception gets raised also when the user is trying to poll data faster than how it was initially set with the :py:meth:`~distance_sensor.DistanceSensor.start_continuous` method.
+
+        .. important::
+
+            If this method is called in a shorter timeframe than the period that was set through :py:meth:`~distance_sensor.DistanceSensor.start_continuous`, an ``OSError`` exception is thrown.
+
+            There's also a timeout on this method that's set to **0.5 secs**. Having this timeout set to **0.5 secs** means that the ``OSError`` gets thrown when the ``period_ms`` parameter of the :py:meth:`~distance_sensor.DistanceSensor.start_continuous`
+            method is bigger than **500 ms**.
+
+        '''
         self.timeout_start = ticks_ms()
         write(self.addr, b'\x13')
         while ((read(self.addr, 1)[0] & 0x07) == 0):
@@ -638,6 +677,14 @@ class DistanceSensor():
         return range[0]
 
     def read_range_single(self):
+        '''
+        Read the detected range with a single measurement. This is less precise/fast than its counterpart :py:meth:`~distance_sensor.DistanceSensor.read_range_continuous`, but it's easier to use.
+
+        :returns: The detected range of the sensor as measured in millimeters. The range can go up to 2.3 meters.
+        :rtype: int
+        :raises OSError: When the distance sensor is not reachable.
+
+        '''
         write(self.addr, b'\x80\x01')
         write(self.addr, b'\xff\x01')
         write(self.addr, b'\x00\x00')
@@ -660,6 +707,13 @@ class DistanceSensor():
         return self.read_range_continuous()
 
     def timeout_occurred(self):
+        """
+        Checks if a timeout has occurred on the :py:meth:`~distance_sensor.DistanceSensor.read_range_continuous` method.
+
+        :returns: Whether a timeout has occurred or not.
+        :rtype: bool
+
+        """
         tmp = self.did_timeout
         self.did_timeout = False
         return tmp

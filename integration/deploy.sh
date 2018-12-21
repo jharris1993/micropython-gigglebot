@@ -20,7 +20,7 @@ upload_url=$(curl -X POST \
 echo "upload url is: $upload_url"
 
 # release all assets
-for item in $(ls build/*.tar.gz build/*.hex)
+for item in $(ls build/*.tar.gz build/*.hex build/usedspace.txt)
 do
     echo "uploading $item"
     curl "$upload_url?name=$item&access_token=$GITHUB_TOKEN" \

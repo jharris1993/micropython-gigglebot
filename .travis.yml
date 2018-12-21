@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '8'
 git:
-  submodules: true
+  submodules: false
   depth: false
 if: tag IS blank
 services:
