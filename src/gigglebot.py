@@ -1,6 +1,6 @@
-import microbit
-import ustruct
+from ustruct import pack, unpack_from, pack_into
 from micropython import const
+from microbit import pin8, pin13, pin14, i2c, sleep
 
 LEFT = 0 #: Left, either a left turn, or the left motor.
 RIGHT = 1 #: Right, either a right turn, or the right motor.
@@ -32,7 +32,7 @@ def init():
     from neopixel import NeoPixel
 
     global neopixelstrip
-    neopixelstrip = NeoPixel(microbit.pin8, 9)
+    neopixelstrip = NeoPixel(pin8, 9)
     
     pixels_off()
     set_eye_color_on_start()
@@ -73,9 +73,9 @@ def set_eye_color_on_start():
     This is called by the :py:meth:`~init()`, usually at the start of the program.
     You are free to call this method whenever you want if you need to keep a closer watch on the voltage level.
     """
-    microbit.i2c.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_BATTERY)
+    i2c.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_BATTERY)
 
-    if ustruct.unpack('>H', microbit.i2c.read(_GIGGLEBOT_ADDRESS, 2))[0] < 3400:
+    if unpack('>H', i2c.read(_GIGGLEBOT_ADDRESS, 2))[0] < 3400:
         neopixelstrip[0]=(10, 0, 0)
         neopixelstrip[1]=(10, 0, 0)
     else:
@@ -113,9 +113,9 @@ def drive(dir=FORWARD, milliseconds=-1):
     :param int dir = FORWARD: Possible values are :py:attr:`~gigglebot.FORWARD` (1) or :py:attr:`~gigglebot.BACKWARD` (-1). Please note there are no tests done on this value. One could theoretically use 2 to double the speed.
     :param int milliseconds = -1: If this parameter is omitted, or a negative value is supplied, the robot will keep on going until told to do something else, like turning or stopping. If a positive value is supplied, the robot will drive for that quantity of milliseconds.
     '''
-    microbit.i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack('BB', int(motor_power_left*dir) & 0xFF, int(motor_power_right*dir) & 0xFF))
+    i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + pack('BB', int(motor_power_left*dir) & 0xFF, int(motor_power_right*dir) & 0xFF))
     if milliseconds >= 0:
-        microbit.sleep(milliseconds)
+        sleep(milliseconds)
         stop()
 
 def turn(dir=LEFT, milliseconds=-1):
@@ -126,18 +126,18 @@ def turn(dir=LEFT, milliseconds=-1):
     :param int milliseconds=-1: If this parameter is omitted, or a negative value is supplied, the robot will keep on going until told to do something else, like turning or stopping. If a positive value is supplied, the robot will drive for that quantity of milliseconds.
     """
     if dir == LEFT: 
-        microbit.i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack('BB', int(motor_power_left) & 0xFF, 0))
+        i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + pack('BB', int(motor_power_left) & 0xFF, 0))
     if dir == RIGHT: 
-        microbit.i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + ustruct.pack('BB', 0, int(motor_power_right) & 0xFF))
+        i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + pack('BB', 0, int(motor_power_right) & 0xFF))
     if milliseconds >= 0:
-        microbit.sleep(milliseconds)
+        sleep(milliseconds)
         stop()        
 
 def stop():
     """
     Stops the GiggleBot right away.
     """
-    microbit.i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + b'\x00\x00')
+    i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + b'\x00\x00')
 
 def set_speed(power_left, power_right):
     """
@@ -163,22 +163,23 @@ def set_servo(which=LEFT, degrees=90):
 
        .. code::
 
+          from microbit import *
           from gigglebot import *
-          import microbit
+
           while True:
               set_servo(BOTH, 0)
-              microbit.sleep(1000) # sleeps for 1000 milliseconds
+              sleep(1000) # sleeps for 1000 milliseconds
               set_servo(BOTH, 180)
-              microbit.sleep(1000) # sleeps for 1000 milliseconds
+              sleep(1000) # sleeps for 1000 milliseconds
     """
     us = min(2400, max(600, 600 + (1800 * degrees // 180)))
     duty = round(us * 1024 * 50 // 1000000)
     if which == LEFT or which == BOTH:
-        microbit.pin14.set_analog_period(20)
-        microbit.pin14.write_analog(duty)
+        pin14.set_analog_period(20)
+        pin14.write_analog(duty)
     if which == RIGHT or which == BOTH:
-        microbit.pin13.set_analog_period(20)
-        microbit.pin13.write_analog(duty)
+        pin13.set_analog_period(20)
+        pin13.write_analog(duty)
         
 def servo_off(which):
     """
@@ -187,9 +188,9 @@ def servo_off(which):
     :param int which: Determines which servo, :py:attr:`~gigglebot.LEFT` (0), :py:attr:`~gigglebot.RIGHT` (1), :py:attr:`~gigglebot.BOTH` (2).
     """
     if which == LEFT or which == BOTH: 
-        microbit.pin14.write_digital(0)
+        pin14.write_digital(0)
     if which == RIGHT or which == BOTH: 
-        microbit.pin13.write_digital(0)
+        pin13.write_digital(0)
     
 def read_sensor(which_sensor, which_side):
     """
@@ -207,16 +208,16 @@ def read_sensor(which_sensor, which_side):
        right, left = read_sensor(LIGHT_SENSOR, BOTH)
 
     """
-    microbit.i2c.write(_GIGGLEBOT_ADDRESS, ustruct.pack('B', which_sensor))
-    buf = microbit.i2c.read(_GIGGLEBOT_ADDRESS, 3)
-    ustruct.pack_into('>HH', _BUFFER, 0, 1023 - (buf[0] << 2 | ((buf[2] & 0xC0) >> 6)), 1023 - (buf[1] << 2 | ((buf[2] & 0x30) >> 4)))
+    i2c.write(_GIGGLEBOT_ADDRESS, pack('B', which_sensor))
+    buf = i2c.read(_GIGGLEBOT_ADDRESS, 3)
+    pack_into('>HH', _BUFFER, 0, 1023 - (buf[0] << 2 | ((buf[2] & 0xC0) >> 6)), 1023 - (buf[1] << 2 | ((buf[2] & 0x30) >> 4)))
 
     if which_side == LEFT: 
-        return ustruct.unpack_from('>H', _BUFFER, 2)[0]
+        return unpack_from('>H', _BUFFER, 2)[0]
     elif which_side == RIGHT: 
-        return ustruct.unpack_from('>H', _BUFFER, 0)[0]
+        return unpack_from('>H', _BUFFER, 0)[0]
     else: 
-        return ustruct.unpack_from('>HH', _BUFFER)
+        return unpack_from('>HH', _BUFFER)
 
 def volt():
     """
@@ -224,5 +225,5 @@ def volt():
 
     :returns: Voltage level of the batteries.
     """
-    microbit.i2c.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_BATTERY)
-    return ustruct.unpack('>H', microbit.i2c.read(_GIGGLEBOT_ADDRESS, 2))[0] / 1000.0
+    i2c.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_BATTERY)
+    return unpack('>H', i2c.read(_GIGGLEBOT_ADDRESS, 2))[0] / 1000.0

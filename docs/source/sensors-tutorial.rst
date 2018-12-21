@@ -78,38 +78,39 @@ How to Chase a Light:
 
 .. code::
 
+    from microbit import *
     from gigglebot import *
-    from utime import ticks_ms
+
     # value for the differential between the two sensors.
     # you can change this value to make it more or less sensitive.
     diff = 10
     # display sleepy face
-    microbit.display.show(microbit.Image.ASLEEP)
+    display.show(Image.ASLEEP)
     # the following two lines resets the 'was_pressed' info
     # and discards any previous presses
-    microbit.button_a.was_pressed()
-    microbit.button_b.was_pressed()
+    button_a.was_pressed()
+    button_b.was_pressed()
     # and also make sure the robot is stopped
     stop()
 
     # variable to control how fast
     # the sensors get printed 
-    counter = ticks_ms()
+    counter = running_time()
 
     # start first loop, waiting for user input
     while True:
         # test for user input
-        if microbit.button_a.was_pressed():
+        if button_a.was_pressed():
             # game got started! Display much love
-            microbit.display.show(microbit.Image.HEART)
+            display.show(Image.HEART)
 
             # start game loop
             while True:
                 # read both sensors
                 right, left = read_sensor(LIGHT_SENSOR, BOTH)
                 # and print these values every 50 ms
-                if ticks_ms() - 50 > counter:
-                    counter = ticks_ms()
+                if running_time() - 50 > counter:
+                    counter = running_time()
                     print((left, right))
                 
                 # test if it's brighter to the right
@@ -125,9 +126,9 @@ How to Chase a Light:
                     drive(FORWARD)
 
                 # oh no, the game got interrupted
-                if microbit.button_b.is_pressed():
+                if button_b.is_pressed():
                     stop()
-                    microbit.display.show(microbit.Image.ASLEEP)
+                    display.show(Image.ASLEEP)
 
                     # this line here gets us out of the game loop
                     break
@@ -186,15 +187,17 @@ circuit and take readings.
 
 .. code::
 
+   from microbit import *
    from gigglebot import *
+
    # reset all previous readings of button_a
    # strictly speaking this is not necessary, it is just a safety thing
-   microbit.button_a.was_pressed()
+   button_a.was_pressed()
    while True:
-       if microbit.button_a.is_pressed():
+       if button_a.is_pressed():
            right, left = read_sensor(LINE_SENSOR, BOTH)
-           microbit.display.scroll(left)
-           microbit.display.scroll(right)
+           display.scroll(left)
+           display.scroll(right)
 
 ===============================
 Follow the Line
@@ -219,12 +222,14 @@ we follow the line.
 
 .. code::
 
+   from microbit import *
    from gigglebot import *
+
    # reset all previous readings of button_a, and button_b
    # strictly speaking this is not necessary, it is just a safety thing
-   microbit.button_a.was_pressed()
-   microbit.buttom_b.was_pressed()
-   microbit.display.show(microbit.Image.YES)
+   button_a.was_pressed()
+   buttom_b.was_pressed()
+   display.show(Image.YES)
    strip=init()
    # speed needs to be set according to your line and battery level.
    # do not go too fast though. 
@@ -234,14 +239,14 @@ we follow the line.
    threshold = 90
    while True:
        # if both buttons are pressed, run calibration code
-       if microbit.button_a.is_pressed() and microbit.button_b.is_pressed():
+       if button_a.is_pressed() and button_b.is_pressed():
            right, left = read_sensor(LINE_SENSOR, BOTH)
-           microbit.display.scroll(left)
-           microbit.display.scroll(right)
+           display.scroll(left)
+           display.scroll(right)
        # if button A is pressed run line following code until button B gets pressed
        # or until we're over white/background
-       if microbit.button_a.is_pressed():
-           while not microbit.button_b.is_pressed():
+       if button_a.is_pressed():
+           while not button_b.is_pressed():
                right, left = read_sensor(LINE_SENSOR, BOTH)
                if left < threshold and right < threshold:
                    # both sensors detect the line

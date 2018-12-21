@@ -19,12 +19,14 @@ The GiggleBot will:
 #. Turn right for half a second.
 
 .. code:: python
-
+   
+   from microbit import *
    from gigglebot import *
+
    set_speed(75,75)
    drive(FORWARD,1000)
    drive(BACKWARD,1000)
-   microbit.sleep(1000)
+   sleep(1000)
    turn(LEFT,500)
    turn(RIGHT,500)
 
@@ -45,16 +47,18 @@ Big Smile
 Let's use the Neopixels to turn the smile leds to a nice red, followed by green and then blue.
 
 .. code:: python
-
+   
+   from microbit import *
    from gigglebot import *
+
    init()
    while True:
        set_smile(R=100,G=0,B=0)
-       microbit.sleep(500)
+       sleep(500)
        set_smile(R=0,G=100,B=0)
-       microbit.sleep(500)
+       sleep(500)
        set_smile(R=0,G=0,B=100)
-       microbit.sleep(500)
+       sleep(500)
 
 .. image:: https://i.imgur.com/f1wjuPc.gif
 
@@ -69,6 +73,7 @@ We'll make use of this to create a rainbow.
 .. code:: python
 
    from gigglebot import *
+
    strip=init()
    strip[2]=(255,0,0)
    strip[2]=(248,12,18)
@@ -90,6 +95,7 @@ Here is how you can get the smile to cycle through the colours of the rainbow.
 
 .. code:: python
 
+   from microbit import *
    from gigglebot import *
 
    # first define the colors of the rainbow in an array
@@ -125,7 +131,7 @@ Here is how you can get the smile to cycle through the colours of the rainbow.
        # display the colors 
        strip.show()
        # wait a bit for the human eye to catch the colors in question
-       microbit.sleep(100)
+       sleep(100)
    # colors were taken from http://colrd.com/palette/22198/?download=css
 
 .. image:: https://i.imgur.com/7Xqa3fp.gif
