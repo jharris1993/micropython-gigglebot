@@ -218,7 +218,7 @@ The logic will be as follow:
 #. If the left sensor detects a black line but not the right sensor, then steer to the left.
 
 We are also using the LEDs on the LED smile to indicate what is going on while
-we follow the line. 
+we follow the line.  
 
 .. code::
 
