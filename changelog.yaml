@@ -1,7 +1,7 @@
 v0.2.1:
   title: GiggleBot MicroPython Firmware v0.2.1
   body:
-    - Reduce the size of the firmware by removing the speech module to make room for the other DI Sensors, thus gaining ~17KB.
+    - Reduce the size of the firmware by removing the compass module to make room for the other DI Sensors, thus gaining ~14KB.
 v0.2.0:
   title: GiggleBot MicroPython Firmware v0.2.0
   body:

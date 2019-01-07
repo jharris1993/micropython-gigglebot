@@ -25,12 +25,33 @@ RUN yt target bbc-microbit-classic-gcc-nosd && \
 RUN sed -i -e 's/MICROPY_PY_BUILTINS_MEMORYVIEW (0)/MICROPY_PY_BUILTINS_MEMORYVIEW (1)/g' /src/gupy/inc/microbit/mpconfigport.h
 
 # disable speech module to reduce firmware size
-RUN sed -i -e '/MP_ROM_PTR(&speech_module)/d' /src/gupy/inc/microbit/mpconfigport.h
+# RUN sed -i -e '/MP_ROM_PTR(&love_module)/d' /src/gupy/inc/microbit/mpconfigport.h && \
+#     sed -i -e '/MP_ROM_PTR(&antigravity_module)/d' /src/gupy/inc/microbit/mpconfigport.h
 
 # generate qstrhdr
 RUN python tools/makeversionhdr.py microbitversion.h && \
     mv microbitversion.h inc/genhdr && \
     ./tools/makeqstrhdr.sh
+
+# remove the compass module from microbit package
+RUN rm /src/gupy/source/microbit/microbitcompass.cpp && \
+    sed -i -e '/compass_up_to_date/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/compass_updating/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/_microbit_compass_obj_t/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    
+    sed -i -e '/microbit_compass_init/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_is_calibrated_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_heading_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_calibrate_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_is_calibrating_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_clear_calibration_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_get_x_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_get_y_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_get_z_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_get_field_strength_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
+    sed -i -e '/microbit_compass_obj/d' /src/gupy/source/microbit/modmicrobit.cpp
+COPY source/* /src/gupy/source/microbit/
+COPY inc/* /src/gupy/inc/microbit/
 
 # enable frozen and bytecoded modules
 RUN sed -i '1s/^/#define MICROPY_QSTR_EXTRA_POOL (mp_qstr_frozen_const_pool)\n/' /src/gupy/inc/microbit/mpconfigport.h && \
