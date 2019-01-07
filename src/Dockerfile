@@ -24,6 +24,9 @@ RUN yt target bbc-microbit-classic-gcc-nosd && \
 # enable memoryview before running makeqstrhdr.sh
 RUN sed -i -e 's/MICROPY_PY_BUILTINS_MEMORYVIEW (0)/MICROPY_PY_BUILTINS_MEMORYVIEW (1)/g' /src/gupy/inc/microbit/mpconfigport.h
 
+# disable speech module to reduce firmware size
+RUN sed -i -e '/MP_ROM_PTR(&speech_module)/d' /src/gupy/inc/microbit/mpconfigport.h
+
 # generate qstrhdr
 RUN python tools/makeversionhdr.py microbitversion.h && \
     mv microbitversion.h inc/genhdr && \
