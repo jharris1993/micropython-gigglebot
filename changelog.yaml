@@ -1,7 +1,8 @@
 v0.2.1:
   title: GiggleBot MicroPython Firmware v0.2.1
   body:
-    - Reduce the size of the firmware by removing the compass module to make room for the other DI Sensors, thus gaining ~14KB.
+    - Reduce the size of the firmware by removing the compass (~14KB) and
+      the SPI (~2.1KB) modules to make room for the other DI Sensors, thus gaining a total of ~16.5KB.
     - Update version of micropython from upstream (nothing serious).
 v0.2.0:
   title: GiggleBot MicroPython Firmware v0.2.0

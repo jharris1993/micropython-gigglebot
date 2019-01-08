@@ -33,9 +33,12 @@ RUN python tools/makeversionhdr.py microbitversion.h && \
     mv microbitversion.h inc/genhdr && \
     ./tools/makeqstrhdr.sh
 
-# source/header files that remove the compass code
-RUN rm /src/gupy/source/microbit/microbitcompass.cpp && \
-    sed -i -e '/microbit_compass_obj/d' /src/gupy/source/microbit/modmicrobit.cpp
+# source/header files that have the compass and spi modules removed
+RUN rm /src/gupy/source/microbit/microbitcompass.cpp /src/gupy/source/microbit/microbitspi.cpp && \
+    sed -i -e '/microbit_compass_obj/d' /src/gupy/source/microbit/modmicrobit.cpp && \
+    sed -i -e '/microbit_spi_obj/d' /src/gupy/source/microbit/modmicrobit.cpp
+# the lines that were commented out are preceded by one of the following comments
+# either "REMOVED COMPASS" or "REMOVED SPI"
 COPY source/* /src/gupy/source/microbit/
 COPY inc/* /src/gupy/inc/microbit/
 

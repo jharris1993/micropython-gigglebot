@@ -241,7 +241,8 @@ void microbit_button_tick(void);
 
 extern const struct _microbit_i2c_obj_t microbit_i2c_obj;
 extern struct _microbit_uart_obj_t microbit_uart_obj;
-extern struct _microbit_spi_obj_t microbit_spi_obj;
+// REMOVED SPI
+// extern struct _microbit_spi_obj_t microbit_spi_obj;
 
 /****************************************************************/
 // declarations of microbit functions and methods
@@ -300,10 +301,11 @@ MP_DECLARE_CONST_FUN_OBJ_VAR_BETWEEN(microbit_image_crop_obj);
 MP_DECLARE_CONST_FUN_OBJ_1(microbit_image_invert_obj);
 MP_DECLARE_CONST_FUN_OBJ_KW(microbit_uart_init_obj);
 MP_DECLARE_CONST_FUN_OBJ_1(microbit_uart_any_obj);
-MP_DECLARE_CONST_FUN_OBJ_KW(microbit_spi_init_obj);
-MP_DECLARE_CONST_FUN_OBJ_2(microbit_spi_write_obj);
-MP_DECLARE_CONST_FUN_OBJ_VAR_BETWEEN(microbit_spi_read_obj);
-MP_DECLARE_CONST_FUN_OBJ_3(microbit_spi_write_readinto_obj);
+// REMOVED SPI
+// MP_DECLARE_CONST_FUN_OBJ_KW(microbit_spi_init_obj);
+// MP_DECLARE_CONST_FUN_OBJ_2(microbit_spi_write_obj);
+// MP_DECLARE_CONST_FUN_OBJ_VAR_BETWEEN(microbit_spi_read_obj);
+// MP_DECLARE_CONST_FUN_OBJ_3(microbit_spi_write_readinto_obj);
 MP_DECLARE_CONST_FUN_OBJ_KW(microbit_music_set_tempo_obj);
 MP_DECLARE_CONST_FUN_OBJ_KW(microbit_music_pitch_obj);
 MP_DECLARE_CONST_FUN_OBJ_KW(microbit_music_play_obj);
