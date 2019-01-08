@@ -33,22 +33,8 @@ RUN python tools/makeversionhdr.py microbitversion.h && \
     mv microbitversion.h inc/genhdr && \
     ./tools/makeqstrhdr.sh
 
-# remove the compass module from microbit package
+# source/header files that remove the compass code
 RUN rm /src/gupy/source/microbit/microbitcompass.cpp && \
-    sed -i -e '/compass_up_to_date/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/compass_updating/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/_microbit_compass_obj_t/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    
-    sed -i -e '/microbit_compass_init/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_is_calibrated_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_heading_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_calibrate_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_is_calibrating_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_clear_calibration_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_get_x_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_get_y_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_get_z_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
-    sed -i -e '/microbit_compass_get_field_strength_obj/d' /src/gupy/inc/microbit/modmicrobit.h && \
     sed -i -e '/microbit_compass_obj/d' /src/gupy/source/microbit/modmicrobit.cpp
 COPY source/* /src/gupy/source/microbit/
 COPY inc/* /src/gupy/inc/microbit/
