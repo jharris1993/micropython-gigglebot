@@ -24,3 +24,12 @@ This can take up to 5-8 minutes to finish so go grab a coffee.
 When it's done, a `firmware.hex` will show up in `build` directory. In the `build` directory there's also going to be a `tmp` directory containing `mpy` and `py` files of the libraries that get compiled into the firmware.
 
 The last thing to do is to copy paste the `firmware.hex` to the microbit. 
+
+## Project Structure
+
+* **docs** - Contains the ReadTheDocs documentation.
+* **integration** - Scripts required by the CI system.
+* **src** - The python libraries for the GiggleBot + DI-Sensors along with the Dockerfile and other custom source/header files.
+    * **inc** - Custom header files used to reduce the size of the firmware.
+    * **source** - Custom source files used to reduce the size of the firmware.
+* **static** - Photo with the GiggleBot.
