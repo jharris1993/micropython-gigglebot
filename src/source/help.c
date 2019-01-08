@@ -86,7 +86,8 @@ STATIC const mp_doc_t help_table_instances[] = {
     {&microbit_button_is_pressed_obj, "If the button is pressed down, is_pressed() is True, else False.\n"},
     {&microbit_button_was_pressed_obj, "Use was_pressed() to learn if the button was pressed since the last time\nwas_pressed() was called. Returns True or False.\n"},
     {&microbit_button_get_presses_obj, "Use get_presses() to get the running total of button presses, and also\nreset this counter to zero.\n"},
-    // // Compass 3D direction heading
+    // Compass 3D direction heading
+    // REMOVED COMPASS
     // {&microbit_compass_heading_obj, "Gives a compass heading between 0-360 with 0 as north.\n"},
     // {&microbit_compass_obj, "Use micro:bit's compass to detect the direction it is heading in.\nThe compass can detect magnetic fields.\nIt uses the Earth's magnetic field to detect direction.\n"},
     // {&microbit_compass_is_calibrated_obj, "If micro:bit's compass is_calibrated() and adjusted for accuracy, return True.\nIf compass hasn't been adjusted for accuracy, return False.\n"},

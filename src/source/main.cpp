@@ -14,6 +14,7 @@ MicroPythonI2C ubit_i2c(I2C_SDA0, I2C_SCL0);
 
 // Global pointers to instances of DAL components that are created dynamically
 MicroBitAccelerometer *ubit_accelerometer;
+// REMOVED COMPASS
 // MicroBitCompass *ubit_compass;
 // MicroBitCompassCalibrator *ubit_compass_calibrator;
 
@@ -37,6 +38,7 @@ void reset_button_handler(uint32_t data, gpio_irq_event event) {
 }
 
 void microbit_ticker(void) {
+    // REMOVED COMPASS
     // Update compass if it is calibrating, but not if it is still
     // updating as compass.idleTick() is not reentrant.
     // if (ubit_compass->isCalibrating() && !compass_updating) {
@@ -148,6 +150,7 @@ int main(void) {
 
     // Create dynamically-allocated DAL components
     ubit_accelerometer = &MicroBitAccelerometer::autoDetect(ubit_i2c);
+    // REMOVED COMPASS
     // ubit_compass = &MicroBitCompass::autoDetect(ubit_i2c);
     // ubit_compass_calibrator = new MicroBitCompassCalibrator(*ubit_compass, *ubit_accelerometer, ubit_display);
 
@@ -171,6 +174,7 @@ int main(void) {
         microbit_display_init();
         microbit_filesystem_init();
         microbit_pin_init();
+        // REMOVED COMPASS
         // microbit_compass_init();
         pwm_init();
         MP_STATE_PORT(radio_buf) = NULL;

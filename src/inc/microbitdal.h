@@ -47,6 +47,7 @@ class MicroPythonI2C : public MicroBitI2C {
 extern MicroPythonI2C ubit_i2c;
 extern MicroBitAccelerometer *ubit_accelerometer;
 extern MicroBitDisplay ubit_display;
+// REMOVED COMPASS
 // extern MicroBitCompass *ubit_compass;
 // extern MicroBitCompassCalibrator *ubit_compass_calibrator;
 

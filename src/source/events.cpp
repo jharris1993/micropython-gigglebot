@@ -53,7 +53,8 @@ int MicroPythonEventHandler::send(MicroBitEvent evt) {
         case MICROBIT_ID_GESTURE:
             microbit_accelerometer_event_handler(&evt);
             break;
-
+            
+        // REMOVED COMPASS
         // case MICROBIT_ID_COMPASS:
         //     if (evt.value == MICROBIT_COMPASS_EVT_CALIBRATE) {
         //         ubit_compass_calibrator->calibrateUX(evt);

@@ -7,7 +7,7 @@ RUN add-apt-repository -y ppa:team-gcc-arm-embedded/ppa && \
     apt-get install gcc-arm-embedded cmake ninja-build srecord libssl-dev -y
 RUN pip install yotta git+https://github.com/liftoff/pyminifier
 
-ENV GUPY_HASH=b60f1382667aa86909a433aab9ba2739f4f71de3
+ENV GUPY_HASH=9f79a8e5cabb6d6f94622f830c7495947a938b86
 
 WORKDIR /src/
 RUN git clone -b master https://github.com/bbcmicrobit/micropython gupy && \
