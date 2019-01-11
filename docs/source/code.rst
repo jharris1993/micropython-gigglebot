@@ -31,6 +31,21 @@ so that the transition from either platform can be as seamless as possible.
    :special-members:
    :exclude-members: __weakref__
 
+************************************
+Temperature Humidity Pressure Sensor
+************************************
+
+Just like with the `Distance Sensor`_, the `Temperature Humidity Pressure Sensor`_ is the same sensor used on the `GoPiGo3`_ 
+and on any other board that we support.
+
+As a consequence, we tried making the API of the `Temperature Humidity Pressure Sensor`_ similar to the one in the DI-Sensors documentation
+:py:class:`di_sensors.temp_hum_press.TempHumPress`, so that the transition from either platform can be as seamless as possible.
+
+.. automodule:: thp
+    :members:
+    :special-members:
+    :exclude-members: __weakref__
+
 ***************************
 GiggleBot - Advanced Module
 ***************************
@@ -43,3 +58,4 @@ GiggleBot - Advanced Module
 .. _gigglebot: https://www.gigglebot.io/
 .. _gopigo3: https://www.dexterindustries.com/gopigo3/
 .. _distance sensor:  https://www.gigglebot.io/collections/frontpage/products/distance-sensor
+.. _temperature humidity pressure sensor: https://www.dexterindustries.com/shop/temperature-humidity-pressure-sensor/

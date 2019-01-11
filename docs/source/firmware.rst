@@ -13,6 +13,7 @@ The GiggleBot MicroPython firmware comes with the following modules:
 * :py:mod:`gigglebot` - contains an API to interface with the actual `GiggleBot`_: think motors, line sensor, light sensors, LEDs, servos, etc.
 * :py:mod:`gigglebot_advanced`- still an API to interface with the `GiggleBot`_, but slightly more advanced and useful for debugging purposes.
 * :py:mod:`distance_sensor` - add-on sensor library for the `Distance Sensor`_.
+* :py:mod:`thp` - add-on sensor library for the `Temperature Humidity Pressure Sensor`_.
 
 Each new release comes with the following artifacts:
 
@@ -63,9 +64,9 @@ And here's what kind of modules can be used on the `BBC microbit`_ hardware:
 +-------------------------------+------------------------+-----------------------+--------------------+
 |:py:mod:`gigglebot_advanced`   |          yes           |          yes          |         yes        |
 +-------------------------------+------------------------+-----------------------+--------------------+
-|:py:mod:`distance_sensor`      |                        |                       |                    |
-|                               |          no            |          no           |         yes        |
-|                               |                        |                       |                    |
+|:py:mod:`distance_sensor`      |          no            |          yes          |         yes        |
++-------------------------------+------------------------+-----------------------+--------------------+
+|:py:mod:`thp`                  |          yes           |          yes          |         yes        |
 +-------------------------------+------------------------+-----------------------+--------------------+
 
 .. note::
@@ -81,5 +82,6 @@ To download, flash and play with the firmware, follow the :ref:`Getting Started 
 
 .. _gigglebot: https://www.gigglebot.io/
 .. _distance sensor:  https://www.gigglebot.io/collections/frontpage/products/distance-sensor
+.. _temperature humidity pressure sensor: https://www.dexterindustries.com/shop/temperature-humidity-pressure-sensor/
 .. _mu editor: https://codewith.mu/en/
 .. _bbc microbit: https://microbit.org/
