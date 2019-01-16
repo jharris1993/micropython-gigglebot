@@ -234,11 +234,9 @@ def translate_to_hsv(in_color):
                 h = 2.0 + (b - r) / delta
             else:
                 h = 4 + (r - g ) / delta
-
             h = h * 60
             if h < 0:
                 h = h + 360
-
         else:
             s = 0
             h = 0
