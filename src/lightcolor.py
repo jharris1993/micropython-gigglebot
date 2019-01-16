@@ -217,8 +217,8 @@ def translate_to_hsv(in_color):
     """
     r,g,b = in_color
 
-    min_channel = min((r,g,b))
-    max_channel = max((r,g,b))
+    min_channel = min(in_color)
+    max_channel = max(in_color)
 
     v = max_channel
     delta = max_channel - min_channel
