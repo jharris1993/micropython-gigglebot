@@ -29,6 +29,7 @@ The last thing to do is to copy paste the `firmware.hex` to the microbit.
 
 * **docs** - Contains the ReadTheDocs documentation.
 * **integration** - Scripts required by the CI system.
+* **misc** - Various useful tools. At the moment it only contains the color picker for HSV values.
 * **src** - The python libraries for the GiggleBot + DI-Sensors along with the Dockerfile and other custom source/header files.
     * **inc** - Custom header files used to reduce the size of the firmware.
     * **source** - Custom source files used to reduce the size of the firmware.

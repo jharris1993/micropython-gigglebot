@@ -1,10 +1,12 @@
-v0.2.1:
+v0.3.0:
   title: GiggleBot MicroPython Firmware v0.2.1
   body:
     - Reduce the size of the firmware by removing the compass (~14KB) and
       the SPI (~2.1KB) modules to make room for the other DI Sensors, thus gaining a total of ~16KB.
-    - Update version of micropython from upstream (nothing serious).
-    - Add thp.py module for the Temperature Humidity Pressure Sensor and update documentation appropriately.
+    - Update version of micropython from upstream (nothing too serious).
+    - Add `thp.py` and `lightcolor.py` modules for the *Temperature Humidity Pressure Sensor* and
+      respectively the *Light and Color Sensor*.
+    - Update the documentation according to the latest changes.
 v0.2.0:
   title: GiggleBot MicroPython Firmware v0.2.0
   body:
