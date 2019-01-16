@@ -28,6 +28,7 @@ docker image build --cache-from $IMAGE_NAME -t $IMAGE_NAME src
 [[ "$(docker ps -a | grep gupy-container)" ]] && docker container rm -f gupy-container
 docker container run --name gupy-container $IMAGE_NAME
 
+
 mkdir build
 # copy the firmware
 docker container cp gupy-container:/src/gupy/build/firmware.hex build/
