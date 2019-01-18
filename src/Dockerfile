@@ -7,7 +7,7 @@ RUN add-apt-repository -y ppa:team-gcc-arm-embedded/ppa && \
     apt-get install gcc-arm-embedded cmake ninja-build srecord libssl-dev -y
 RUN pip install yotta git+https://github.com/liftoff/pyminifier
 
-ENV GUPY_HASH=b60f1382667aa86909a433aab9ba2739f4f71de3
+ENV GUPY_HASH=9f79a8e5cabb6d6f94622f830c7495947a938b86
 
 WORKDIR /src/
 RUN git clone -b master https://github.com/bbcmicrobit/micropython gupy && \
@@ -24,10 +24,23 @@ RUN yt target bbc-microbit-classic-gcc-nosd && \
 # enable memoryview before running makeqstrhdr.sh
 RUN sed -i -e 's/MICROPY_PY_BUILTINS_MEMORYVIEW (0)/MICROPY_PY_BUILTINS_MEMORYVIEW (1)/g' /src/gupy/inc/microbit/mpconfigport.h
 
+# disable speech module to reduce firmware size
+# RUN sed -i -e '/MP_ROM_PTR(&love_module)/d' /src/gupy/inc/microbit/mpconfigport.h && \
+#     sed -i -e '/MP_ROM_PTR(&antigravity_module)/d' /src/gupy/inc/microbit/mpconfigport.h
+
 # generate qstrhdr
 RUN python tools/makeversionhdr.py microbitversion.h && \
     mv microbitversion.h inc/genhdr && \
     ./tools/makeqstrhdr.sh
+
+# source/header files that have the compass and spi modules removed
+RUN rm /src/gupy/source/microbit/microbitcompass.cpp /src/gupy/source/microbit/microbitspi.cpp && \
+    sed -i -e '/microbit_compass_obj/d' /src/gupy/source/microbit/modmicrobit.cpp && \
+    sed -i -e '/microbit_spi_obj/d' /src/gupy/source/microbit/modmicrobit.cpp
+# the lines that were commented out are preceded by one of the following comments
+# either "REMOVED COMPASS" or "REMOVED SPI"
+COPY source/* /src/gupy/source/microbit/
+COPY inc/* /src/gupy/inc/microbit/
 
 # enable frozen and bytecoded modules
 RUN sed -i '1s/^/#define MICROPY_QSTR_EXTRA_POOL (mp_qstr_frozen_const_pool)\n/' /src/gupy/inc/microbit/mpconfigport.h && \
