@@ -24,10 +24,29 @@ project = 'Gigglebot Micropython Library'
 copyright = '2018, Dexter Industries'
 author = 'Dexter Industries'
 
+commit_hash = os.popen('git rev-parse HEAD').read().strip()
+latest_version = os.popen('git describe --tags --abbrev=0').read().strip()
+branch = os.popen('git rev-parse --abbrev-ref HEAD').read().strip()
 # The short X.Y version
-version = ''
+version = os.popen('git tag --points-at ' + commit_hash).read().strip()
 # The full version, including alpha/beta/rc tags
-release = ''
+release = version
+
+if len(version) > 0:
+    rst_epilog = ' .. |firmware| replace:: `here <https://dexind.s3.amazonaws.com/micropython-gigglebot/firmware/%s/%s-dexterindustries-gb-firmware.hex>`__' % (version, version)
+    rst_epilog += '\n .. |fwversion| replace:: **%s**' % version
+    s3_module_link = 'https://dexind.s3.amazonaws.com/micropython-gigglebot/firmware/%s/modules/' % version
+else:
+    rst_epilog = ' .. |firmware| replace:: `here <https://dexind.s3.amazonaws.com/micropython-gigglebot/firmware/%s/%s-dexterindustries-gb-firmware.hex>`__' % (latest_version, latest_version)
+    rst_epilog += '\n .. |fwversion| replace:: **%s**' % latest_version
+    s3_module_link = 'https://dexind.s3.amazonaws.com/micropython-gigglebot/firmware/%s/modules/' % latest_version
+
+extlinks = {
+    's3-storage-module': (
+        s3_module_link + '%s',
+        's3-storage-module'
+    )
+}
 
 # -- General configuration ---------------------------------------------------
 
@@ -42,6 +61,8 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.extlinks'
 ]
 
 autodoc_mock_imports = ["microbit", "ustruct", "micropython", "utime", "gc"]
@@ -190,3 +211,9 @@ epub_exclude_files = ['search.html']
 intersphinx_mapping = {
     'di_sensors' : ('http://di-sensors.readthedocs.io/en/master/', None)
 }
+
+def setup(app):
+    # branch = 'master'
+    app.add_config_value('icbranch', branch, 'env')
+    app.add_config_value('iclen_tag_version', len(version), 'env')
+    app.add_config_value('iclatest_version', latest_version, 'env')

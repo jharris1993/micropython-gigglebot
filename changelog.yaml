@@ -1,3 +1,9 @@
+v0.3.2:
+  title: GiggleBot MicroPython Firmware v0.3.2
+  body:
+    - Change how the documentation is organized.
+    - Use direct links to the generated python modules for each version in the documentation (on the S3 bucket). Make the
+      documentation _reactive_, depending on which branch the documentation gets built upon.
 v0.3.1:
   title: GiggleBot MicroPython Firmware v0.3.1
   body:
