@@ -37,7 +37,7 @@ release = version
 print("Found branch '%s'" % branch)
 print("Latest version is %s" % latest_version)
 print("Current version is %s" % version)
-print("Git has commit is %s" % commit_hash)
+print("Commit hash is %s" % commit_hash)
 
 if len(version) > 0:
     rst_epilog = ' .. |firmware| replace:: `here <https://dexind.s3.amazonaws.com/micropython-gigglebot/firmware/%s/%s-dexterindustries-gb-firmware.hex>`__' % (version, version)
