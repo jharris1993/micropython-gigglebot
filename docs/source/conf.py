@@ -26,11 +26,18 @@ author = 'Dexter Industries'
 
 commit_hash = os.popen('git rev-parse HEAD').read().strip()
 latest_version = os.popen('git describe --tags --abbrev=0').read().strip()
-branch = os.popen('git rev-parse --abbrev-ref HEAD').read().strip()
+os.popen('bash find_branch.sh')
+branch = os.popen('cat branch').read().strip()
+
 # The short X.Y version
 version = os.popen('git tag --points-at ' + commit_hash).read().strip()
 # The full version, including alpha/beta/rc tags
 release = version
+
+print("Found branch '%s'" % branch)
+print("Latest version is %s" % latest_version)
+print("Current version is %s" % version)
+print("Git has commit is %s" % commit_hash)
 
 if len(version) > 0:
     rst_epilog = ' .. |firmware| replace:: `here <https://dexind.s3.amazonaws.com/micropython-gigglebot/firmware/%s/%s-dexterindustries-gb-firmware.hex>`__' % (version, version)
