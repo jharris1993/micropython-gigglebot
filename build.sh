@@ -45,4 +45,5 @@ cd ..
 mv tmp/*.tar.gz .
 mv tmp/usedspace.txt .
 mv firmware.hex $(cat $TRAVIS_BUILD_DIR/integration/tag)-dexterindustries-gb-firmware.hex
+mv tmp modules
 popd
