@@ -23,6 +23,8 @@ Each new release comes with the following artifacts:
 * The pre-compiled modules (bytecodes) that no longer need to be compiled when they get imported on the BBC micro:bit.
 * And the modules in their natural state.
 
+.. _firmware-how:
+
 ******************
 Firmware
 ******************

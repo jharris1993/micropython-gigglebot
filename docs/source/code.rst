@@ -11,7 +11,11 @@ GiggleBot - Regular Module
 **************************
 
 The :py:mod:`gigglebot` module should be the go-to module when playing around with the `GiggleBot`_. 
-That's why this is the first module that gets documented in this chapter.
+That's why this is the first module that gets documented in this chapter. 
+
+The module, should you want to use it in another firmware instead of using the *GiggleBot MicroPython Firmware* (that already comes with all the modules in it),
+can be downloaded from :s3-storage-module:`here <gigglebot.py>` (version |fwversion|).
+
 
 .. automodule:: gigglebot
    :members:
@@ -28,6 +32,9 @@ board that we support and that has a Grove port with an `I2C` interface on it.
 
 Because of this, we've spend lots of time trying to make the following API of the `Distance Sensor`_ identical to the one in the DI-Sensors documentation :py:class:`di_sensors.distance_sensor.DistanceSensor`,
 so that the transition from either platform can be as seamless as possible.
+
+The module, should you want to use it in another firmware instead of using the *GiggleBot MicroPython Firmware* (that already comes with all the modules in it),
+can be downloaded from :s3-storage-module:`here <distance_sensor.py>` (version |fwversion|).
 
 .. automodule:: distance_sensor
    :members:
@@ -47,6 +54,9 @@ and on any other board that we support.
 As a consequence, we tried making the API of the `Temperature Humidity Pressure Sensor`_ similar to the one in the DI-Sensors documentation
 :py:class:`di_sensors.temp_hum_press.TempHumPress`, so that the transition from either platform can be as seamless as possible.
 
+The module, should you want to use it in another firmware instead of using the *GiggleBot MicroPython Firmware* (that already comes with all the modules in it),
+can be downloaded from :s3-storage-module:`here <thp.py>` (version |fwversion|).
+
 .. automodule:: thp
     :members:
     :special-members:
@@ -58,6 +68,10 @@ Light and Color Sensor
 
 .. image:: _static/images/lcs.jpg
     :scale: 40
+
+
+The module, should you want to use it in another firmware instead of using the *GiggleBot MicroPython Firmware* (that already comes with all the modules in it),
+can be downloaded from :s3-storage-module:`here <lightcolor.py>` (version |fwversion|).
 
 .. automodule:: lightcolor
     :members: LightColorSensor, known_colors, known_hsv
@@ -86,6 +100,9 @@ characteristics of HSV format `here <http://learn.leighcotnoir.com/artspeak/elem
 ***************************
 GiggleBot - Advanced Module
 ***************************
+
+The module, should you want to use it in another firmware instead of using the *GiggleBot MicroPython Firmware* (that already comes with all the modules in it),
+can be downloaded from :s3-storage-module:`here <gigglebot_advanced.py>` (version |fwversion|).
 
 .. automodule:: gigglebot_advanced
    :members:

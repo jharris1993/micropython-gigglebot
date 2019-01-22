@@ -32,16 +32,50 @@ At the end of these short instructions, you will be able to run the following sn
 Downloading the Firmware
 ************************
 
-To download the GiggleBot firmware corresponding to a custom version of the documentation, note the version tag of the documentation,
-then head over to this project's `release page <https://github.com/RobertLucian/micropython-gigglebot/releases>`_ and download the firmware with the respective tag.
+The 1st option in downloading the firmware is to visit the direct link placed in here and download the afferent file. Make sure you download it as a ``hex`` file.
 
+.. ifconfig:: icbranch != 'master'
+
+    The latest version (which is |fwversion|) of the firmware can also be directly downloaded from |firmware|.
+
+.. ifconfig:: icbranch == 'master'
+
+    .. ifconfig:: iclen_tag_version == 0
+
+        The latest version (which is |fwversion|) of the firmware can also be directly downloaded from |firmware|.
+
+    .. ifconfig:: iclen_tag_version > 0
+
+        To download the current version |fwversion| corresponding to this documentation, click |firmware|.
+
+
+.. figure:: https://i.imgur.com/h7xhS2n.gif
+   :align: center
+   :alt: download the firmware directly
+
+The 2nd option is head over to this project's `release page <https://github.com/RobertLucian/micropython-gigglebot/releases>`_ and download the appropriate firmware for the appropriate documentation.
 As of this moment, this is the `latest release <https://github.com/RobertLucian/micropython-gigglebot/releases/latest>`_.
 
 .. figure::  _static/gifs/download_firmware.gif
    :align:   center
    :alt: downloading the gigglebot firmware
 
-Apart from being able to download the firmware, the ``.py`` and ``.mpy`` modules can also be downloaded. Check the above tables to see where and which modules can be used.
+
+************************
+Downloading the Modules
+************************
+
+Apart from being able to download the firmware, the ``.py`` and ``.mpy`` modules can also be downloaded. And just like with the firmware,
+you can either download the modules from the `release page <https://github.com/RobertLucian/micropython-gigglebot/releases>`_ or by accessing the following direct links for version |fwversion|:
+:s3-storage-module:`gigglebot.py <gigglebot.py>`, :s3-storage-module:`distance_sensor.py <distance_sensor.py>`, :s3-storage-module:`thp.py <thp.py>`, :s3-storage-module:`lightcolor.py <lightcolor.py>`,
+:s3-storage-module:`gigglebot_advanced.py <gigglebot_advanced.py>`.
+
+You can also check this artifact explorer `here <https://dexind.s3.amazonaws.com/index.html#micropython-gigglebot/firmware/>`__.
+
+.. important:: 
+
+    Downloading the modules when the *GiggleBot MicroPython Firmware* is used is redundant. Use the modules (the ``py`` modules) when you are using the basic
+    version of micropython. And in that case, not all ``py`` modules will work - for that check this :ref:`section <firmware-how>` and see how you can pair the modules to fit on a basic firmware.
 
 *************************
 Flashing the Firmware

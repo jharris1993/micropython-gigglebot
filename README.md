@@ -9,6 +9,8 @@ Check the documentation for more details.
 
 ![](docs/source/_static/images/GiggleBot-Line_Follower_900x.png)
 
+Artifacts can be found on the release page or on [this S3 bucket](https://dexind.s3.amazonaws.com/index.html#micropython-gigglebot/firmware/).
+
 ## Building It
 
 Running the following commands are enough to build the firmware locally.

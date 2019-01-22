@@ -136,4 +136,4 @@ Here is how you can get the smile to cycle through the colours of the rainbow.
 
 .. image:: https://i.imgur.com/7Xqa3fp.gif
 
-
+End
