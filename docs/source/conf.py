@@ -213,7 +213,7 @@ intersphinx_mapping = {
 }
 
 def setup(app):
-    branch = 'master'
+    # branch = 'master'
     app.add_config_value('icbranch', branch, 'env')
     app.add_config_value('iclen_tag_version', len(version), 'env')
     app.add_config_value('iclatest_version', latest_version, 'env')
