@@ -1,5 +1,5 @@
 v0.4.0:
-  title: GiggleBot MicroPython Firmware v0.3.3
+  title: GiggleBot MicroPython Firmware v0.4.0
   body:
     - Fix the Distance Sensor getting into conflict with the Light and Color sensor on the I2C line - change the
       address to a different one. Add note about the conflicts induced by the Distance Sensor in the docs.
