@@ -106,7 +106,7 @@ class DistanceSensor():
         '''
         Constructor for initializing a :py:class:`~distance_sensor.DistanceSensor` object.
 
-        :param int address = 0x2A: Address of the Distance Sensor. Generally this address does not change.
+        :param int address = 0x2A: Address of the Distance Sensor. Default address of the device is **0x29**.
         :param int timeout = 500: Timeout value for when :py:meth:`~distance_sensor.DistanceSensor.read_range_continuous` is used.
 
         .. important::
