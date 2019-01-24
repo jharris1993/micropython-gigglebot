@@ -16,8 +16,12 @@ LIGHT_SENSOR = 6 #: I2C command to read the light sensors.
 
 _BUFFER = bytearray(10)
 _GIGGLEBOT_ADDRESS = const(0x04)
-_GET_VOLTAGE_BATTERY = b'\x04' #: I2C command to query voltage level of the battery.
-_SET_MOTOR_POWERS = b'\x0a' #: I2C command to write new power values to the motor.    
+# _GET_VOLTAGE_BATTERY = b'\x04' #: I2C command to query voltage level of the battery.
+# _SET_MOTOR_POWERS = b'\x0a' #: I2C command to write new power values to the motor.
+
+_DS = None
+_THP = None
+_LCS = None
 
 def init(): 
     """
@@ -73,9 +77,9 @@ def set_eye_color_on_start():
     This is called by the :py:meth:`~init()`, usually at the start of the program.
     You are free to call this method whenever you want if you need to keep a closer watch on the voltage level.
     """
-    i2c.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_BATTERY)
+    i2c.write(0x04, b'\x04')
 
-    if unpack('>H', i2c.read(_GIGGLEBOT_ADDRESS, 2))[0] < 3400:
+    if unpack('>H', i2c.read(0x04, 2))[0] < 3400:
         neopixelstrip[0]=(10, 0, 0)
         neopixelstrip[1]=(10, 0, 0)
     else:
@@ -113,7 +117,7 @@ def drive(dir=FORWARD, milliseconds=-1):
     :param int dir = FORWARD: Possible values are :py:attr:`~gigglebot.FORWARD` (1) or :py:attr:`~gigglebot.BACKWARD` (-1). Please note there are no tests done on this value. One could theoretically use 2 to double the speed.
     :param int milliseconds = -1: If this parameter is omitted, or a negative value is supplied, the robot will keep on going until told to do something else, like turning or stopping. If a positive value is supplied, the robot will drive for that quantity of milliseconds.
     '''
-    i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + pack('BB', int(motor_power_left*dir) & 0xFF, int(motor_power_right*dir) & 0xFF))
+    i2c.write(0x04, b'\x0a' + pack('BB', int(motor_power_left*dir) & 0xFF, int(motor_power_right*dir) & 0xFF))
     if milliseconds >= 0:
         sleep(milliseconds)
         stop()
@@ -126,9 +130,9 @@ def turn(dir=LEFT, milliseconds=-1):
     :param int milliseconds=-1: If this parameter is omitted, or a negative value is supplied, the robot will keep on going until told to do something else, like turning or stopping. If a positive value is supplied, the robot will drive for that quantity of milliseconds.
     """
     if dir == LEFT: 
-        i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + pack('BB', int(motor_power_left) & 0xFF, 0))
+        i2c.write(0x04, b'\x0a' + pack('BB', int(motor_power_left) & 0xFF, 0))
     if dir == RIGHT: 
-        i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + pack('BB', 0, int(motor_power_right) & 0xFF))
+        i2c.write(0x04, b'\x0a' + pack('BB', 0, int(motor_power_right) & 0xFF))
     if milliseconds >= 0:
         sleep(milliseconds)
         stop()        
@@ -137,7 +141,7 @@ def stop():
     """
     Stops the GiggleBot right away.
     """
-    i2c.write(_GIGGLEBOT_ADDRESS, _SET_MOTOR_POWERS + b'\x00\x00')
+    i2c.write(0x04, b'\x0a' + b'\x00\x00')
 
 def set_speed(power_left, power_right):
     """
@@ -208,8 +212,8 @@ def read_sensor(which_sensor, which_side):
        right, left = read_sensor(LIGHT_SENSOR, BOTH)
 
     """
-    i2c.write(_GIGGLEBOT_ADDRESS, pack('B', which_sensor))
-    buf = i2c.read(_GIGGLEBOT_ADDRESS, 3)
+    i2c.write(0x04, pack('B', which_sensor))
+    buf = i2c.read(0x04, 3)
     pack_into('>HH', _BUFFER, 0, 1023 - (buf[0] << 2 | ((buf[2] & 0xC0) >> 6)), 1023 - (buf[1] << 2 | ((buf[2] & 0x30) >> 4)))
 
     if which_side == LEFT: 
@@ -219,11 +223,68 @@ def read_sensor(which_sensor, which_side):
     else: 
         return unpack_from('>HH', _BUFFER)
 
+def read_distance_sensor():
+    """
+    Read the detected range by the distance sensor. Uses the :py:meth:`~distance_sensor.DistanceSensor.read_range_single` method.
+
+    :returns: The distance to the object as measured in millimeters. Range is up to 2.3 meters. 
+    :rtype: int
+    :raises OSError: When there's trouble reaching the sensor.
+    :raises ImportError: If this module is run from a firmware that doesn't have the :py:mod:`distance_sensor` module.
+    """
+    global _DS
+    if _DS is None:
+        from distance_sensor import DistanceSensor
+        _DS = DistanceSensor()
+    
+    return _DS.read_range_single()
+
+def read_thp_sensor():
+    """
+    Read the temperature, the atmospheric pressure, humidity and dewpoint temperature.
+    Uses the :py:class:`~thp.TempHumPress` class to do that.
+
+    :returns: In this specific order: **temp** in *Celsius*, **temp** in *Fahrenheit*, **pressure** in *Pascals* unit, **humidity** as percentage, **dewpoint** in *Celsius*, **dewpoint** in *Fahrenheit*.
+    :rtype: 6-element float tuple
+    :raises OSError: When there's trouble reaching the sensor.
+    :raises ImportError: If this module is run from a firmware that doesn't have the :py:mod:`thp` module.
+    """
+    global _THP
+    if _THP is None:
+        from thp import TempHumPress
+        _THP = TempHumPress()
+    
+    return (
+        _THP.get_temperature_celsius(),
+        _THP.get_temperature_fahrenheit(),
+        _THP.get_pressure(),
+        _THP.get_humidity(),
+        _THP.get_dewpoint_celsius(),
+        _THP.get_dewpoint_fahrenheit()
+    )
+
+def read_light_color_sensor():
+    """
+    Detect the color with the Light and Color sensor. Uses the :py:meth:`~lightcolor.LightColorSensor.get_color` method.
+
+    :returns: 
+    :rtype: tuple(string, tuple(int,int,int))
+    :raises OSError: When there's trouble reaching the sensor.
+    :raises ImportError: If this module is run from a firmware that doesn't have the :py:mod:`lightcolor` module.
+    """
+    global _LCS
+    if _LCS is None:
+        from lightcolor import LightColorSensor
+        _LCS = LightColorSensor()
+        _LCS.set_led(True)
+
+    return _LCS.get_color()
+
 def volt():
     """
     Returns the voltage level of the batteries.
 
     :returns: Voltage level of the batteries.
     """
-    i2c.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_BATTERY)
-    return unpack('>H', i2c.read(_GIGGLEBOT_ADDRESS, 2))[0] / 1000.0
+    i2c.write(0x04, b'\x04')
+    return unpack('>H', i2c.read(0x04, 2))[0] / 1000.0

@@ -23,115 +23,92 @@ _MOTOR_FLOAT            = const(-128)
 
 class GiggleBot():
     '''
-    Slightly more advanced class to interface with the `GiggleBot`_ hardware.
+    Class to get details and check the status of the `GiggleBot`_ hardware.
     '''
 
     def __init__(self):
         '''
-        Constructor to initialize a :py:class:`~gigglebot_advanced.GiggleBot` object.
+        Constructor to initialize a :py:class:`~gb_diag.GiggleBot` object.
         '''
         self.write = microbit.i2c.write
         self.read = microbit.i2c.read
         self.buff = bytearray(8)
 
-    def get_manufacturer(self):
+    def get_details(self):
         '''
-        Gets the manufacturer name.
+        Gets details about the Gigglebot robot.
 
-        :returns: The manufacturer name of the board.
-        :rtype: string
+        :returns: The manufacturer name of the board, the name of the board and the firmware version of it in this specific order.
+        :rtype: tuple(string, string, int)
 
         '''
         self.write(_GIGGLEBOT_ADDRESS, _GET_MANUFACTURER)
-        return str(self.read(_GIGGLEBOT_ADDRESS, 20), 'utf-8').strip()
-        
-    def get_board(self):
-        '''
-        Gets the name of the board.
-
-        :returns: The name of the board.
-        :rtype: string
-        
-        '''
+        man = str(self.read(_GIGGLEBOT_ADDRESS, 20), 'utf-8').strip()
         self.write(_GIGGLEBOT_ADDRESS, _GET_BOARD)
-        return str(self.read(_GIGGLEBOT_ADDRESS, 20), 'utf-8').strip()
-
-    def get_version_firmware(self):
-        '''
-        Gets the firmware version of the GiggleBot board (not the micro:bit's).
-
-        :returns: Firmware version of the GiggleBot board.
-        :rtype: int
-        
-        '''
+        board = str(self.read(_GIGGLEBOT_ADDRESS, 20), 'utf-8').strip()
         self.write(_GIGGLEBOT_ADDRESS, _GET_FIRMWARE_VERSION)
-        return ustruct.unpack('>H', self.read(_GIGGLEBOT_ADDRESS, 2))[0]
-        
-    def get_voltage_battery(self):
-        '''
-        Gets voltage of the battery. 
-        
-        If the power switch is off, the value returned is unequivocally close to **0**.
+        fw =  ustruct.unpack('>H', self.read(_GIGGLEBOT_ADDRESS, 2))[0]
 
-        :returns: The battery voltage.
-        :rtype: float
+        return (man, board, fw)
+
+    def get_voltages(self):
+        '''
+        Gets battery and rail voltages. 
+        
+        If the power switch is off, the value returned for the battery voltage is unequivocally close to **0**.
+
+        :returns: The battery and rail voltages in this order.
+        :rtype: (float, float)
         
         '''
         self.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_BATTERY)
-        return ustruct.unpack('>H', self.read(_GIGGLEBOT_ADDRESS, 2))[0] / 1000
-
-    def get_voltage_rail(self):
-        '''
-        Gets the rail voltage.
-
-        :returns: Rail voltage.
-        :rtype: float
-
-        '''
+        bat = ustruct.unpack('>H', self.read(_GIGGLEBOT_ADDRESS, 2))[0] / 1000
         self.write(_GIGGLEBOT_ADDRESS, _GET_VOLTAGE_RAIL)
-        return ustruct.unpack('>H', self.read(_GIGGLEBOT_ADDRESS, 2))[0] / 1000
+        rail = ustruct.unpack('>H', self.read(_GIGGLEBOT_ADDRESS, 2))[0] / 1000
 
-    def get_line_sensors(self):
-        '''
-        The line sensor values on the GiggleBot.
+        return (bat, rail)
 
-        Lower values indicate a darker material and on the opposite, higher values signify lighter colors (closing to white).
+    # def get_line_sensors(self):
+    #     '''
+    #     The line sensor values on the GiggleBot.
 
-        :returns: A 2-element tuple with the values of the left and right sensor in this specific order.
-        :rtype: tuple(int,int)
+    #     Lower values indicate a darker material and on the opposite, higher values signify lighter colors (closing to white).
+
+    #     :returns: A 2-element tuple with the values of the left and right sensor in this specific order.
+    #     :rtype: tuple(int,int)
         
-        '''
-        self.write(_GIGGLEBOT_ADDRESS, _GET_LINE_SENSORS)
-        array = self.read(_GIGGLEBOT_ADDRESS, 3)
+    #     '''
+    #     self.write(_GIGGLEBOT_ADDRESS, _GET_LINE_SENSORS)
+    #     array = self.read(_GIGGLEBOT_ADDRESS, 3)
 
-        for i in b'\x00\x01':
-            ustruct.pack_into('f', self.buff, 1 - i, (1023 - (array[i] << 2) | (((array[2] << (i * 2)) & 0xC0) >> 6)) / 1023.0)
+    #     for i in b'\x00\x01':
+    #         ustruct.pack_into('f', self.buff, 1 - i, (1023 - (array[i] << 2) | (((array[2] << (i * 2)) & 0xC0) >> 6)) / 1023.0)
         
-        return ustruct.unpack('ff', self.buff)
+    #     return ustruct.unpack('ff', self.buff)
     
-    def get_light_sensors(self):
-        '''
-        The light sensor values on the GiggleBot.
+    # def get_light_sensors(self):
+    #     '''
+    #     The light sensor values on the GiggleBot.
 
-        The lower the values, the darker is the environment around the GiggleBot. It's vice-versa for higher values.
+    #     The lower the values, the darker is the environment around the GiggleBot. It's vice-versa for higher values.
 
-        :returns: A 2-element tuple with the values of the left and right light sensor in this specific order.
-        :rtype: tuple(int,int)
+    #     :returns: A 2-element tuple with the values of the left and right light sensor in this specific order.
+    #     :rtype: tuple(int,int)
         
-        '''
-        self.write(_GIGGLEBOT_ADDRESS, _GET_LIGHT_SENSORS)
-        array = self.read(_GIGGLEBOT_ADDRESS, 3)
+    #     '''
+    #     self.write(_GIGGLEBOT_ADDRESS, _GET_LIGHT_SENSORS)
+    #     array = self.read(_GIGGLEBOT_ADDRESS, 3)
 
-        for i in b'\x00\x01':
-            ustruct.pack_into('f', self.buff, 1 - i, (1023 - (array[i] << 2) | (((array[2] << (i * 2)) & 0xC0) >> 6)) / 1023.0)
+    #     for i in b'\x00\x01':
+    #         ustruct.pack_into('f', self.buff, 1 - i, (1023 - (array[i] << 2) | (((array[2] << (i * 2)) & 0xC0) >> 6)) / 1023.0)
         
-        return ustruct.unpack('ff', self.buff)
+    #     return ustruct.unpack('ff', self.buff)
         
     def set_motor_power(self, port, power):
         '''
         Sets the power of a single motor on the GiggleBot.
 
-        :param port: Either :py:attr:`~gigglebot_advanced.MOTOR_LEFT` or :py:attr:`~gigglebot_advanced.MOTOR_RIGHT` depending on which motor has to be controlled.
+        :param port: Either :py:attr:`~gb_diag.MOTOR_LEFT` or :py:attr:`~gb_diag.MOTOR_RIGHT` depending on which motor has to be controlled.
         :param int power: **-100** to **0** for reverse and from **0** to **100** for full speed ahead.
 
         '''
@@ -151,7 +128,7 @@ class GiggleBot():
         '''
         Returns a report of the status of a given motor on the GiggleBot.
 
-        :param port: Either :py:attr:`~gigglebot_advanced.MOTOR_LEFT` or :py:attr:`~gigglebot_advanced.MOTOR_RIGHT`.
+        :param port: Either :py:attr:`~gb_diag.MOTOR_LEFT` or :py:attr:`~gb_diag.MOTOR_RIGHT`.
 
         This method returns a 2-element list where the 1st element is called the ``status_flag`` and the 2nd one is
         represents the current speed set for the given motor.

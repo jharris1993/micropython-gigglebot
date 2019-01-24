@@ -97,14 +97,14 @@ characteristics of HSV format `here <http://learn.leighcotnoir.com/artspeak/elem
 .. autofunction:: translate_to_hsv
 .. autofunction:: guess_color_hsv
 
-***************************
-GiggleBot - Advanced Module
-***************************
+*****************************
+GiggleBot - Diagnostic Module
+*****************************
 
 The module, should you want to use it in another firmware instead of using the *GiggleBot MicroPython Firmware* (that already comes with all the modules in it),
-can be downloaded from :s3-storage-module:`here <gigglebot_advanced.py>` (version |fwversion|).
+can be downloaded from :s3-storage-module:`here <gb_diag.py>` (version |fwversion|).
 
-.. automodule:: gigglebot_advanced
+.. automodule:: gb_diag
    :members:
    :special-members:
    :exclude-members: __weakref__

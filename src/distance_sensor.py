@@ -102,12 +102,20 @@ class DistanceSensor():
     did_timeout = False
     addr = _DEFAULT_ADDRESS
 
-    def __init__(self, address = 0x29, timeout = 500):
+    def __init__(self, address = 0x2A, timeout = 500):
         '''
         Constructor for initializing a :py:class:`~distance_sensor.DistanceSensor` object.
 
-        :param int address = 0x29: Address of the Distance Sensor. Generally this address does not change.
+        :param int address = 0x2A: Address of the Distance Sensor. Default address of the device is **0x29**.
         :param int timeout = 500: Timeout value for when :py:meth:`~distance_sensor.DistanceSensor.read_range_continuous` is used.
+
+        .. important::
+
+            When instantiating this object, keep in mind that the `Distance Sensor`_ has by-default, the same address as the
+            :py:class:`~lightcolor.LightColorSensor`, but gets changed immediately after that, right within the constructor. 
+            
+            What still has to be done is to make sure the distance sensor is the first sensor to be connected and initialiazed and
+            only after that the `Light and Color Sensor`_ can be plugged in and initialized too on the GiggleBot.
 
         '''
 
