@@ -4,6 +4,8 @@ v0.4.0:
     - Fix the Distance Sensor getting into conflict with the Light and Color sensor on the I2C line - change the
       address to a different one. Add note about the conflicts induced by the Distance Sensor in the docs.
     - Simplify the `gigglebot_advanced.py` module and rename it to `gb_diag.py`.
+    - Add read methods for each add-on sensor in the `gigglebot.py` module; the read methods abstract the init
+      and slightly more complex read methods from each sensor class. 
 v0.3.2:
   title: GiggleBot MicroPython Firmware v0.3.2
   body:

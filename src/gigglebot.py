@@ -17,7 +17,11 @@ LIGHT_SENSOR = 6 #: I2C command to read the light sensors.
 _BUFFER = bytearray(10)
 _GIGGLEBOT_ADDRESS = const(0x04)
 # _GET_VOLTAGE_BATTERY = b'\x04' #: I2C command to query voltage level of the battery.
-# _SET_MOTOR_POWERS = b'\x0a' #: I2C command to write new power values to the motor.    
+# _SET_MOTOR_POWERS = b'\x0a' #: I2C command to write new power values to the motor.
+
+_DS = None
+_THP = None
+_LCS = None
 
 def init(): 
     """
@@ -218,6 +222,63 @@ def read_sensor(which_sensor, which_side):
         return unpack_from('>H', _BUFFER, 0)[0]
     else: 
         return unpack_from('>HH', _BUFFER)
+
+def read_distance_sensor():
+    """
+    Read the detected range by the distance sensor. Uses the :py:meth:`~distance_sensor.DistanceSensor.read_range_single` method.
+
+    :returns: The distance to the object as measured in millimeters. Range is up to 2.3 meters. 
+    :rtype: int
+    :raises OSError: When there's trouble reaching the sensor.
+    :raises ImportError: If this module is run from a firmware that doesn't have the :py:mod:`distance_sensor` module.
+    """
+    global _DS
+    if _DS is None:
+        from distance_sensor import DistanceSensor
+        _DS = DistanceSensor()
+    
+    return _DS.read_range_single()
+
+def read_thp_sensor():
+    """
+    Read the temperature, the atmospheric pressure, humidity and dewpoint temperature.
+    Uses the :py:class:`~thp.TempHumPress` class to do that.
+
+    :returns: In this specific order: **temp** in *Celsius*, **temp** in *Fahrenheit*, **pressure** in *Pascals* unit, **humidity** as percentage, **dewpoint** in *Celsius*, **dewpoint** in *Fahrenheit*.
+    :rtype: 6-element float tuple
+    :raises OSError: When there's trouble reaching the sensor.
+    :raises ImportError: If this module is run from a firmware that doesn't have the :py:mod:`thp` module.
+    """
+    global _THP
+    if _THP is None:
+        from thp import TempHumPress
+        _THP = TempHumPress()
+    
+    return (
+        _THP.get_temperature_celsius(),
+        _THP.get_temperature_fahrenheit(),
+        _THP.get_pressure(),
+        _THP.get_humidity(),
+        _THP.get_dewpoint_celsius(),
+        _THP.get_dewpoint_fahrenheit()
+    )
+
+def read_light_color_sensor():
+    """
+    Detect the color with the Light and Color sensor. Uses the :py:meth:`~lightcolor.LightColorSensor.get_color` method.
+
+    :returns: 
+    :rtype: tuple(string, tuple(int,int,int))
+    :raises OSError: When there's trouble reaching the sensor.
+    :raises ImportError: If this module is run from a firmware that doesn't have the :py:mod:`lightcolor` module.
+    """
+    global _LCS
+    if _LCS is None:
+        from lightcolor import LightColorSensor
+        _LCS = LightColorSensor()
+        _LCS.set_led(True)
+
+    return _LCS.get_color()
 
 def volt():
     """
