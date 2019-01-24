@@ -11,7 +11,7 @@ Modules
 The GiggleBot MicroPython firmware comes with the following modules:
 
 * :py:mod:`gigglebot` - contains an API to interface with the actual `GiggleBot`_: think motors, line sensor, light sensors, LEDs, servos, etc.
-* :py:mod:`gigglebot_advanced`- still an API to interface with the `GiggleBot`_, but slightly more advanced and useful for debugging purposes.
+* :py:mod:`gb_diag`- still an API to interface with the `GiggleBot`_, but slightly more advanced and useful for debugging purposes.
 * :py:mod:`distance_sensor` - add-on sensor library for the `Distance Sensor`_.
 * :py:mod:`thp` - add-on sensor library for the `Temperature Humidity Pressure Sensor`_.
 * :py:mod:`lightcolor` - add-on sensor library for the `Light and Color Sensor`_.
@@ -65,7 +65,7 @@ And here's what kind of modules can be used on the `BBC microbit`_ hardware:
 +===============================+========================+=======================+====================+
 |:py:mod:`gigglebot`            |          yes           |          yes          |         yes        |
 +-------------------------------+------------------------+-----------------------+--------------------+
-|:py:mod:`gigglebot_advanced`   |          yes           |          yes          |         yes        |
+|:py:mod:`gb_diag`              |          yes           |          yes          |         yes        |
 +-------------------------------+------------------------+-----------------------+--------------------+
 |:py:mod:`distance_sensor`      |          no            |          no           |         yes        |
 +-------------------------------+------------------------+-----------------------+--------------------+

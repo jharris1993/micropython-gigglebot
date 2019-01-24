@@ -68,7 +68,7 @@ Downloading the Modules
 Apart from being able to download the firmware, the ``.py`` and ``.mpy`` modules can also be downloaded. And just like with the firmware,
 you can either download the modules from the `release page <https://github.com/RobertLucian/micropython-gigglebot/releases>`_ or by accessing the following direct links for version |fwversion|:
 :s3-storage-module:`gigglebot.py <gigglebot.py>`, :s3-storage-module:`distance_sensor.py <distance_sensor.py>`, :s3-storage-module:`thp.py <thp.py>`, :s3-storage-module:`lightcolor.py <lightcolor.py>`,
-:s3-storage-module:`gigglebot_advanced.py <gigglebot_advanced.py>`.
+:s3-storage-module:`gb_diag.py <gb_diag.py>`.
 
 You can also check this artifact explorer `here <https://dexind.s3.amazonaws.com/index.html#micropython-gigglebot/firmware/>`__.
 
