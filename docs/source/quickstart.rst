@@ -26,6 +26,23 @@ At the end of these short instructions, you will be able to run the following sn
         sleep(250) # wait 250 msec
         pixels_off() # turn off the GiggleBot eyes
         sleep(250) # wait 250 msec
+
+
+.. note::
+
+    There are 2 MCUs sitting on the BBC micro:bit:
+
+    * One MCU has the role of flashing the HEX file that gets copied over to the other MCU.
+    * And the second MCU houses the actual scripts and MicroPython firmware that you interact with (in the real world or at the terminal).
+
+    Both of these MCUs have their own firmware, but sometimes the firmware sitting on the MCU that hosts the scripts and the MicroPython firmware gets to be called a *runtime*. Other
+    times it's just called for what it is - a firmware, just like in the following examples:
+    
+    * `Exhibit A <https://microbit-micropython.readthedocs.io/en/v1.0.1/devguide/flashfirmware.html?highlight=firmware#>`_ from BBC micro:bit MicroPython docs.
+    * `Exhibit B <https://microbit-micropython.readthedocs.io/en/v1.0.1/devguide/hexformat.html>`_ from BBC micro:bit MicroPython docs.
+
+    So in our documentation, when we talk about the firmware, we are referring to the MicroPython firmware. And when we want to refer to the other MCU's firmware,
+    we just call it the DAPLink firmware. Simple, right?
       
 
 ************************

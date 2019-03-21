@@ -26,11 +26,11 @@ For an introduction to MicroPython on the Micro:Bit, see the `official tutorial 
    quickstart
    firmware
 
+   code
+
    control-tutorial
    sensors-tutorial
    addon-sensors-tutorial
-
-   code
 
 
 

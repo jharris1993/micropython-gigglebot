@@ -3,3 +3,5 @@ docs/build
 .vscode/
 *.pyc
 docs/source/branch
+
+docs/source/_build/html/
