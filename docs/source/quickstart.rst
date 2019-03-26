@@ -41,8 +41,8 @@ At the end of these short instructions, you will be able to run the following sn
     * `Exhibit A <https://microbit-micropython.readthedocs.io/en/v1.0.1/devguide/flashfirmware.html?highlight=firmware#>`_ from BBC micro:bit MicroPython docs.
     * `Exhibit B <https://microbit-micropython.readthedocs.io/en/v1.0.1/devguide/hexformat.html>`_ from BBC micro:bit MicroPython docs.
 
-    So in our documentation, when we talk about the firmware, we are referring to the MicroPython firmware. And when we want to refer to the other MCU's firmware,
-    we just call it the DAPLink firmware. Simple, right?
+    So in our documentation, **when we talk about the firmware, we are referring to the MicroPython firmware. And when we want to refer to the other MCU's firmware,
+    we just call it the DAPLink firmware**. Simple, right?
       
 
 ************************
