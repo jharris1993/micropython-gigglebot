@@ -50,7 +50,7 @@ Here's a table showing what kind of modules the **GiggleBot firmware** (which is
 +----------------------------+------------------------+-----------------------+
 |precompiled ``.mpy`` modules|          yes           |          no           |
 +----------------------------+------------------------+-----------------------+
-|freezed gigglebot           |                        |                       |
+|frozen gigglebot            |                        |                       |
 |modules                     |          yes           |          no           |
 |                            |                        |                       |
 +----------------------------+------------------------+-----------------------+
@@ -58,7 +58,7 @@ Here's a table showing what kind of modules the **GiggleBot firmware** (which is
 And here's what kind of modules can be used on the `BBC microbit`_ hardware:
 
 +-------------------------------+------------------------+-----------------------+--------------------+
-|          Module               | Load ``.py`` module    | Load ``.mpy`` module  | As freezed module  |
+|          Module               | Load ``.py`` module    | Load ``.mpy`` module  | As a frozen module |
 |                               |                        |                       |                    |
 +===============================+========================+=======================+====================+
 |:py:mod:`gigglebot`            |          yes           |          yes          |         yes        |
@@ -74,7 +74,7 @@ And here's what kind of modules can be used on the `BBC microbit`_ hardware:
 
 .. note::
     Be advised that loading ``.py`` modules directly to the microbit uses most of the RAM that's available to the board,
-    so not much is left to the user to code. That's why it's better to go with ``.mpy`` or freezed modules (*meaning our custom firmware*) and only go with
+    so not much is left to the user to code. That's why it's better to go with ``.mpy`` or frozen modules (*meaning our custom firmware*) and only go with
     the regular ``.py`` when burning the custom GiggleBot MicroPython firmware to the microbit is not possible.
 
 **********
